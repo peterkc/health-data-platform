@@ -40,3 +40,6 @@ coverage.xml
 
 # Orphan-branch worktrees (managed separately)
 vault/
+
+# Node (commitlint devDependencies)
+node_modules/

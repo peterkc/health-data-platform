@@ -1,0 +1,69 @@
+extends:
+  - "@commitlint/config-conventional"
+
+rules:
+  scope-enum:
+    - 2
+    - always
+    - [
+        workspace,
+        packages,
+        verticals,
+        apps,
+        hdp-canonical,
+        hdp-audit,
+        hdp-identity,
+        hdp-consent,
+        hdp-provenance,
+        hdp-ingest,
+        hdp-api,
+        hdp-agent,
+        hdp-outbox,
+        hh-oasis,
+        hh-scribe,
+        hh-hitl,
+        hh-emr-sync,
+        hh-mcp,
+        hh-skills,
+        home-health-scribe,
+        docs,
+        ci,
+        deps,
+        infra,
+        vault,
+        adr,
+        spec,
+        research,
+      ]
+
+# HDP does not yet have an ACF-style /commit skill, but keep the
+# scope-pattern map authored so it is discoverable.
+x-scope-patterns:
+  workspace: "pyproject.toml"
+  ci: ".github/**"
+  docs:
+    - "README.md"
+    - "docs/**"
+    - "**/*.md"
+  deps:
+    - "**/pyproject.toml"
+    - "uv.lock"
+  infra:
+    - "docker-compose.yml"
+    - "Dockerfile*"
+  hdp-canonical: "packages/hdp-canonical/**"
+  hdp-audit: "packages/hdp-audit/**"
+  hdp-identity: "packages/hdp-identity/**"
+  hdp-consent: "packages/hdp-consent/**"
+  hdp-provenance: "packages/hdp-provenance/**"
+  hdp-ingest: "packages/hdp-ingest/**"
+  hdp-api: "packages/hdp-api/**"
+  hdp-agent: "packages/hdp-agent/**"
+  hdp-outbox: "packages/hdp-outbox/**"
+  hh-oasis: "verticals/home-health/hh-oasis/**"
+  hh-scribe: "verticals/home-health/hh-scribe/**"
+  hh-hitl: "verticals/home-health/hh-hitl/**"
+  hh-emr-sync: "verticals/home-health/hh-emr-sync/**"
+  hh-mcp: "verticals/home-health/hh-mcp/**"
+  hh-skills: "verticals/home-health/hh-skills/**"
+  home-health-scribe: "apps/home-health-scribe/**"

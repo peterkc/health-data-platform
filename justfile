@@ -55,6 +55,13 @@ fmt:
 # Full verification gate: lint + tests.
 verify: lint test
 
+# Mirror GitHub Actions locally.
+ci: lint test
+
+# Install git hooks (run once after cloning).
+install-hooks:
+    uvx lefthook install
+
 # Remove caches and build artifacts (leaves .venv alone).
 clean:
     find . -type d \( -name __pycache__ -o -name .pytest_cache -o -name .ruff_cache -o -name .mypy_cache -o -name "*.egg-info" -o -name dist -o -name build \) -prune -exec rm -rf {} +

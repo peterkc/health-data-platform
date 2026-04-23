@@ -1,0 +1,92 @@
+language: en-US
+inheritance: true
+
+tone_instructions: "Focus on correctness and logic errors. Skip style issues that ruff handles. Be direct."
+
+reviews:
+  profile: "assertive"
+  timeout: 900000
+
+  request_changes_workflow: true
+  fail_commit_status: true
+  review_details: true
+
+  suggested_labels: false
+  auto_apply_labels: true
+
+  path_filters:
+    - "packages/**/*.py"
+    - "verticals/**/*.py"
+    - "apps/**/*.py"
+    - "!**/test_smoke.py"
+    - "!**/.venv/**"
+    - "!vault/**"
+    - "!**/__pycache__/**"
+    - "!**/uv.lock"
+    - "!**/*.md"
+    - "!.cache/**"
+
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  path_instructions:
+    - path: "**/*.py"
+      instructions: |
+        Focus on correctness, security, and logic errors. Skip trivial style
+        suggestions that ruff/formatter already handles (naming conventions,
+        import style, str vs StrEnum, unused variables). Do not suggest
+        alternative patterns unless the current pattern has a concrete bug
+        or performance issue. Skip column width and formatting nitpicks
+        unless they cause data loss or misrepresentation.
+    - path: "**/test_*.py"
+      instructions: |
+        Focus on test correctness and coverage gaps. Do not nitpick test
+        structure, assertion style, or mock patterns unless they cause
+        false positives/negatives.
+    - path: "justfile"
+      instructions: |
+        Check recipe dependencies and cross-recipe consistency. Verify that
+        recipes referenced in composite recipes (e.g., 'verify') have their
+        tool dependencies documented or bootstrapped.
+
+  auto_review:
+    enabled: false
+    labels:
+      - "coderabbit"
+    drafts: false
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+
+  finishing_touches:
+    simplify:
+      enabled: true
+
+  tools:
+    ruff:
+      enabled: true
+    languagetool:
+      enabled: true
+      enabled_only: false
+      level: "default"
+
+  pre_merge_checks:
+    title:
+      mode: "warning"
+      requirements: "Must follow conventional commit format: type(scope): description"
+    description:
+      mode: "warning"
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
+  learnings:
+    scope: "local"
+  mcp:
+    usage: disabled
+
+chat:
+  auto_reply: true
+  allow_non_org_members: false

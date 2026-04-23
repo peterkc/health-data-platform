@@ -1,0 +1,59 @@
+name: Feature Request
+description: Propose a new feature or enhancement
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use [EARS syntax](https://alistairmavin.com/ears/) for requirements where applicable:
+        - **Ubiquitous**: "The [system] shall [action]"
+        - **Event-driven**: "When [event], the [system] shall [action]"
+        - **State-driven**: "While [state], the [system] shall [action]"
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should this feature do?
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this feature needed? What problem does it solve?
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - Critical
+        - P1 - High
+        - P2 - Medium
+        - P3 - Low
+        - P4 - Backlog
+    validations:
+      required: true
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Estimated Effort
+      options:
+        - XS (1-2 hours)
+        - S (1 day)
+        - M (2-3 days)
+        - L (1 week)
+        - XL (2+ weeks)
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know this is done?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+    validations:
+      required: false

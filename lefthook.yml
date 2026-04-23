@@ -1,0 +1,40 @@
+output:
+  - failure
+
+pre-commit:
+  parallel: true
+  commands:
+    ruff-check:
+      run: uv run ruff check --fix {staged_files}
+      glob: "*.py"
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
+
+    ruff-format:
+      run: uv run ruff format {staged_files}
+      glob: "*.py"
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
+
+    pytest-collect:
+      # Structural sanity: collection must succeed across the workspace.
+      # Fast (<1s) and catches import errors / syntax issues before commit.
+      run: uv run pytest -q --co
+      glob: "*.py"
+      skip:
+        - merge
+        - rebase
+
+commit-msg:
+  commands:
+    commitlint:
+      run: npx --no-install commitlint --edit {1}
+
+pre-push:
+  commands:
+    tests:
+      run: uv run pytest -q
