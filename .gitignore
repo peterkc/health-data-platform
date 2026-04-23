@@ -40,6 +40,14 @@ coverage.xml
 
 # Orphan-branch worktrees (managed separately)
 vault/
+.beads/
 
 # Node (commitlint devDependencies)
 node_modules/
+
+# Beads / Dolt files (added by bd init; kept here even though .beads/ is a
+# worktree mount — these patterns guard against accidental commits if the
+# worktree is ever replaced by a regular directory)
+.dolt/
+*.db
+.beads-credential-key
