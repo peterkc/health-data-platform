@@ -1,0 +1,38 @@
+# Minimal OTLP collector config: receive traces/metrics/logs over OTLP,
+# export to stdout. Replace the ``debug`` exporter with tempo/prometheus/loki
+# once those backends land in docker-compose.observability.yml.
+#
+# Reference: https://opentelemetry.io/docs/collector/configuration/
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+
+exporters:
+  # TODO: swap in tempo / prometheus / loki when those services land.
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]

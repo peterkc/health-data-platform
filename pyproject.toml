@@ -42,6 +42,7 @@ hh-emr-sync = { workspace = true }
 hh-mcp = { workspace = true }
 hh-skills = { workspace = true }
 home-health-scribe = { workspace = true }
+hdp-observability = { workspace = true }
 
 [tool.ruff]
 line-length = 100

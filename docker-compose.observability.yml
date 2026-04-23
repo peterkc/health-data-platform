@@ -1,0 +1,17 @@
+# Supplementary compose file — brings up an OTLP collector that exports to
+# stdout for local dev. Swap in Tempo/Jaeger/Prometheus exporters when ready.
+#
+# Usage (via justfile recipes observability-up / observability-down):
+#   docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: hdp-otel-collector
+    restart: unless-stopped
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    ports:
+      - "4317:4317"  # OTLP gRPC
+      - "4318:4318"  # OTLP HTTP
+    volumes:
+      - ./otel-collector-config.yml:/etc/otelcol-contrib/config.yaml:ro

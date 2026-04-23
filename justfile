@@ -19,6 +19,15 @@ down:
 logs:
     docker compose logs -f
 
+# Bring up the observability stack (otel collector → stdout) alongside the
+# base services. Additive; safe to run when the base stack is already up.
+observability-up:
+    docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+
+# Tear down observability collector (leaves base services running).
+observability-down:
+    docker compose -f docker-compose.yml -f docker-compose.observability.yml down
+
 # --- Database ----------------------------------------------------------------
 
 # Apply DB migrations. Real implementation lands once hdp-canonical / hdp-audit
