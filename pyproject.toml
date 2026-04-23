@@ -1,0 +1,90 @@
+[project]
+name = "health-data-platform"
+version = "0.1.0"
+description = "Python-first multi-vertical health data platform reference architecture"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [{ name = "Peter K. Chan", email = "peterkc@hey.com" }]
+
+# Root project has no runtime dependencies; all code lives in workspace members.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.0",
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "mypy>=1.13.0",
+]
+
+[tool.uv.workspace]
+members = [
+    "packages/*",
+    "verticals/home-health/*",
+    "apps/*",
+]
+
+[tool.uv.sources]
+hdp-canonical = { workspace = true }
+hdp-audit = { workspace = true }
+hdp-identity = { workspace = true }
+hdp-consent = { workspace = true }
+hdp-provenance = { workspace = true }
+hdp-ingest = { workspace = true }
+hdp-api = { workspace = true }
+hdp-agent = { workspace = true }
+hdp-outbox = { workspace = true }
+hh-oasis = { workspace = true }
+hh-scribe = { workspace = true }
+hh-hitl = { workspace = true }
+hh-emr-sync = { workspace = true }
+hh-mcp = { workspace = true }
+hh-skills = { workspace = true }
+home-health-scribe = { workspace = true }
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+# /Volumes/health-data is a volume root — exclude macOS metadata dirs and
+# generated caches so ruff does not trip on EACCES from them.
+extend-exclude = [
+    ".Spotlight-V100",
+    ".Trashes",
+    ".fseventsd",
+    ".tmp",
+    ".venv",
+    "vault",
+]
+
+[tool.ruff.lint]
+# Keep the scaffolding rule set pragmatic: pycodestyle, pyflakes, isort, bugbear, pyupgrade.
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["B011"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = [
+    "packages",
+    "verticals",
+    "apps",
+]
+asyncio_mode = "auto"
+# importlib mode avoids duplicate-basename collisions across workspace members.
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--import-mode=importlib",
+]
+
+[tool.mypy]
+python_version = "3.13"
+strict = false
+ignore_missing_imports = true

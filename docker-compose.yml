@@ -1,0 +1,55 @@
+# Local dev stack for the health-data-platform.
+# Non-standard host ports are chosen to avoid clobbering other local instances.
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: hdp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hdp
+      POSTGRES_PASSWORD: hdp
+      POSTGRES_DB: hdp
+    ports:
+      - "5437:5432"
+    # Postgres 18+ expects the data directory under a major-version subdir of
+    # /var/lib/postgresql (see docker-library/postgres#1259). Mounting the parent
+    # lets the entrypoint manage /var/lib/postgresql/18/docker/ correctly.
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hdp -d hdp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    container_name: hdp-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: hdp
+      MONGO_INITDB_ROOT_PASSWORD: hdp
+    ports:
+      - "27037:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer:latest
+    container_name: hdp-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  mongo-data:
