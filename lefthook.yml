@@ -4,6 +4,9 @@ output:
 pre-commit:
   parallel: true
   commands:
+    beads:
+      run: bd hooks run pre-commit
+
     ruff-check:
       run: uv run ruff check --fix {staged_files}
       glob: "*.py"
@@ -29,7 +32,25 @@ pre-commit:
         - merge
         - rebase
 
+post-merge:
+  commands:
+    beads:
+      run: bd hooks run post-merge
+
+post-checkout:
+  commands:
+    beads:
+      run: bd hooks run post-checkout
+
+prepare-commit-msg:
+  commands:
+    beads:
+      run: bd hooks run prepare-commit-msg {1} {2} {3}
+
 pre-push:
   commands:
+    beads:
+      run: bd hooks run pre-push
+
     tests:
       run: uv run pytest -q

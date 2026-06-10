@@ -30,6 +30,7 @@ coverage.xml
 .env
 .env.*
 !.env.example
+.envrc.private
 
 # Editor / OS
 .idea/
@@ -42,6 +43,9 @@ coverage.xml
 vault/
 .beads/
 
+# Feature worktrees (per .claude/rules edit-routing convention)
+/.worktrees/
+
 # Node (commitlint devDependencies)
 node_modules/
 
@@ -51,3 +55,6 @@ node_modules/
 .dolt/
 *.db
 .beads-credential-key
+
+# Private founding / business artifacts (per workspace-visibility.md)
+internal/

@@ -58,7 +58,8 @@ across workspace members. Keep this — removing it breaks multi-package tests.
 
 - Conventional commits (`.commitlintrc.yaml` enforces scope-enum)
 - Signed commits (do not use `--no-gpg-sign`)
-- `vault/` gitignored (secrets/private artifacts)
+- `vault/` orphan-branch worktree (`vault` branch) — design knowledge: ADRs,
+  specs, research, patterns. Gitignored on main, separate commit history.
 
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
@@ -77,9 +78,11 @@ bd close <id>         # Complete work
 
 ### Rules
 
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
+- Boundary (agx-aligned, per `~/.claude/rules/task-routing.md`): GitHub Issues
+  is the ship tracker (PR-closeable work, epics, roadmap); bd is the runtime
+  tracker (agent execution state, session-queued work, blockers). TaskCreate
+  owns in-session progress; persistent knowledge lives in auto-memory.
 - Run `bd prime` for detailed command reference and session close protocol
-- Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
 
 ## Session Completion
 

@@ -19,6 +19,7 @@ rules:
         hdp-api,
         hdp-agent,
         hdp-outbox,
+        hdp-observability,
         hh-oasis,
         hh-scribe,
         hh-hitl,
@@ -60,6 +61,7 @@ x-scope-patterns:
   hdp-api: "packages/hdp-api/**"
   hdp-agent: "packages/hdp-agent/**"
   hdp-outbox: "packages/hdp-outbox/**"
+  hdp-observability: "packages/hdp-observability/**"
   hh-oasis: "verticals/home-health/hh-oasis/**"
   hh-scribe: "verticals/home-health/hh-scribe/**"
   hh-hitl: "verticals/home-health/hh-hitl/**"
