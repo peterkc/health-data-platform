@@ -1,0 +1,133 @@
+---
+# Identity
+topic: computer-use-emr-sync
+status: synthesizing   # hub open; taxonomy accrues from driver spike runs
+created: 2026-06-11
+updated: 2026-06-11
+opened_by: peterkc (via fork session, GH #18 / bead hdp-8qn)
+
+# Phase 1 SCOPE — pre-filled from GH #18 + #14 (user-approved at dispatch)
+scope:
+  problem: >
+    What a browser-level (DOM-first, vision-assist) EMR sync transport needs
+    to be credible infrastructure: securing credentialed sessions, grounding
+    sandbox selection, and capturing how long-running browser workflows
+    against EMR UIs fail.
+  audience: >
+    Driver-repository implementers and the hh-emr-sync adapter-contract
+    design (#11 seam). Public vault — written for external readers.
+  boundaries: >
+    Hub + security posture + sandbox decision + taxonomy seed. Driver
+    implementation is out of scope for this repo (own repository, distinct
+    security/testing posture). Synthetic data only; no PHI anywhere.
+  risks: >
+    Vault is public: no leak-sensitive context. Credentialed browser
+    automation carries prompt-injection and credential-exposure risks —
+    addressed structurally in the posture section.
+  success: >
+    GH #18 exit conditions: hub exists with posture + sandbox decision
+    recorded; taxonomy carries >=1 hardening recommendation per observed
+    failure class; adapter-contract implications fed back to #11.
+
+# Phase 2 PLAN — source curation
+plan:
+  sources:
+    - id: 1
+      tool: grep (local vault)
+      query: "computer.use|browser|OpenEMR across vault/research/"
+      rationale: "Prior-context dimension — what the vault already records"
+      status: gathered
+    - id: 2
+      tool: WebFetch
+      query: "https://www.open-emr.org/demo/ — instances, reset cadence, terms"
+      rationale: "Sandbox dimension — public-demo option"
+      status: gathered
+    - id: 3
+      tool: WebFetch
+      query: "openemr DOCKER_README.md — images, compose flavors, setup cost"
+      rationale: "Sandbox dimension — self-host option"
+      status: gathered
+    - id: 4
+      tool: WebFetch
+      query: "Anthropic computer-use docs — security + limitations"
+      rationale: "Posture dimension + DOM-vs-vision decision input"
+      status: gathered
+
+# Phase 3 GATHER — per-source outcomes
+findings:
+  - source_id: 1
+    raw_path: raw/01-vault-prior-context.md
+    outcome: useful
+    notes: "OpenEMR known as schema reference; no prior computer-use work"
+  - source_id: 2
+    raw_path: raw/02-openemr-public-demo.md
+    outcome: useful
+    notes: "Daily 8:00 UTC wipe + shared instances + no AUP — disqualifying for spike runs"
+  - source_id: 3
+    raw_path: raw/03-openemr-docker-selfhost.md
+    outcome: useful
+    notes: "Pinned production compose, ~5-10 min, arm64; ports/creds gap → Docker Hub"
+  - source_id: 4
+    raw_path: raw/04-anthropic-computer-use-security.md
+    outcome: useful
+    notes: "Vendor security list maps onto posture; limitation list argues DOM-first"
+
+# Phase 4 SYNTHESIZE — decision log
+decisions:
+  - section: Security posture
+    proposed_by: ai
+    revised_by: none
+    rationale: >
+      Structural-over-behavioral framing: synthetic-only scope, isolation,
+      allowlist, credentials outside the model loop — each eliminates a
+      failure mode rather than mitigating it.
+    rejected_alternatives:
+      - alternative: "Credentials provided to the model in prompt XML tags (vendor path)"
+        reason_rejected: "Docs themselves flag login-in-prompt as increased prompt-injection risk; DOM-first login avoids it structurally"
+  - section: Sandbox selection
+    proposed_by: ai
+    revised_by: none
+    rationale: >
+      Failure-taxonomy work needs multi-day owned state; public demo wipes
+      daily, is shared, and has no AUP authorizing sustained automation.
+    rejected_alternatives:
+      - alternative: "Public demo.openemr.io instances as the spike sandbox"
+        reason_rejected: "Daily 8:00 UTC wipe destroys taxonomy state; shared tenancy confounds observations; sustained automated traffic against community infra without an AUP is not defensible"
+  - section: DOM-first, vision-assist
+    proposed_by: ai
+    revised_by: none
+    rationale: >
+      Vendor limitation list (latency, coordinate hallucination, scroll
+      unreliability, niche-app degradation) argues against vision as the
+      primary loop; DOM selectors are deterministic and auditable.
+    rejected_alternatives:
+      - alternative: "Vision-primary control loop (screenshot-driven)"
+        reason_rejected: "Slower, costlier, hallucination-prone per vendor docs; reserved for canvas/legacy widgets and selector-drift recovery"
+  - section: Failure taxonomy (seed)
+    proposed_by: ai
+    revised_by: none
+    rationale: >
+      Empirical rows cannot be pre-derived; the table fixes the column
+      structure (detection, blast radius, hardening) so spike runs have a
+      place to land observations.
+    rejected_alternatives:
+      - alternative: "Pre-populate taxonomy from web literature on flaky browser automation"
+        reason_rejected: "#18 explicitly wants taxonomy accrued from spike runs; literature rows would be unverified filler"
+
+# Phase 5 ARTIFACT — open state
+artifact:
+  hub_url: README.md
+  open_questions:
+    - "Driver repository name + visibility (owner decision); link out once created"
+    - "Synthetic-patient seeding mechanism (built-in demo data vs Synthea import)"
+    - "Production-compose default ports/credentials (Docker Hub page)"
+    - "First tracer target workflow (visit documentation vs assessment forms)"
+  next_actions:
+    - "Create driver repo; first tracer run against self-hosted OpenEMR"
+    - "Populate taxonomy rows from observed failures (>=1 hardening rec per class)"
+    - "Feed idempotency/checkpoint/async contract implications into #11 trim spec"
+
+# Provenance tag legend (used inline in README citations)
+provenance_legend:
+  ai-found: "AI surfaced from a source"
+---
