@@ -1,0 +1,60 @@
+{
+  "members": [
+    {
+      "name": "hdp-core",
+      "layer": "packages",
+      "absorbs": ["hdp-canonical", "hdp-audit", "hdp-identity", "hdp-consent", "hdp-provenance", "hdp-outbox"],
+      "deps": ["pydantic>=2.8", "fhir.resources>=7.1", "sqlmodel>=0.0.22"],
+      "depth": "SKEL"
+    },
+    {
+      "name": "hdp-api",
+      "layer": "packages",
+      "absorbs": ["hdp-ingest"],
+      "deps": ["fastapi>=0.115", "uvicorn[standard]>=0.32", "pydantic>=2.8"],
+      "depth": "SKEL"
+    },
+    {
+      "name": "hdp-agent",
+      "layer": "packages",
+      "absorbs": [],
+      "deps": ["pydantic>=2.8"],
+      "depth": "SKEL"
+    },
+    {
+      "name": "hdp-observability",
+      "layer": "packages",
+      "absorbs": [],
+      "deps": ["structlog>=24", "opentelemetry-api>=1.25", "opentelemetry-sdk>=1.25", "opentelemetry-exporter-otlp>=1.25", "opentelemetry-instrumentation-fastapi>=0.46b0", "opentelemetry-instrumentation-sqlalchemy>=0.46b0", "opentelemetry-instrumentation-httpx>=0.46b0", "opentelemetry-instrumentation-logging>=0.46b0"],
+      "depth": "MIN"
+    },
+    {
+      "name": "hdp-hitl",
+      "layer": "packages",
+      "absorbs": ["hh-hitl"],
+      "deps": ["fastapi>=0.115", "hdp-core"],
+      "depth": "SKEL"
+    },
+    {
+      "name": "hh-scribe",
+      "layer": "verticals/home-health",
+      "absorbs": ["hh-oasis", "hh-skills", "hh-mcp"],
+      "deps": ["anthropic>=0.39", "pydantic>=2.8", "mcp>=1.2", "hdp-core", "hdp-agent", "hdp-api"],
+      "depth": "SKEL"
+    },
+    {
+      "name": "hh-emr-sync",
+      "layer": "verticals/home-health",
+      "absorbs": [],
+      "deps": ["httpx>=0.28", "hdp-core"],
+      "depth": "SKEL"
+    },
+    {
+      "name": "home-health-scribe",
+      "layer": "apps",
+      "absorbs": [],
+      "deps": ["fastapi>=0.115", "uvicorn[standard]>=0.32", "hh-scribe", "hdp-hitl", "hh-emr-sync"],
+      "depth": "COMPOSED"
+    }
+  ]
+}

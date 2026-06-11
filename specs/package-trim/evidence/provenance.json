@@ -1,0 +1,18 @@
+{
+  "type": "provenance",
+  "iterations": [
+    {
+      "timestamp": "2026-06-11T17:08:07Z",
+      "and_gate": {
+        "codex": "approve",
+        "claude": "pending-parent-adjudication",
+        "status": "degraded-codex-only",
+        "reason": "fork constraint: worker forks cannot spawn the fresh-context Claude reviewer subagent (SK-0007); parent orchestrator adjudicates"
+      },
+      "clarify_rounds": 1,
+      "needs_clarification_count": 0,
+      "interview": "self-answered from orchestrator session context; codex interview-challenger findings (LOC figure, Protocol-stub scope, source quoting) applied",
+      "coverage_c7_c8": "PASS"
+    }
+  ]
+}

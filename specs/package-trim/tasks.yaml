@@ -1,0 +1,177 @@
+# package-trim — collapse 17 uv workspace members to 8 (GH #11)
+# Phases sequenced by `needs:`; per-phase `type` drives gate dispatch.
+manifest:
+  packages/hdp-core/:
+    status: new
+    purpose: "Merged data-layer package; absorbs canonical, audit, identity, consent, provenance, outbox as submodules"
+  packages/hdp-canonical/:
+    status: modified
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/canonical; directory removed"
+  packages/hdp-audit/:
+    status: modified
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/audit; directory removed"
+  packages/hdp-identity/:
+    status: modified
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/identity; directory removed"
+  packages/hdp-consent/:
+    status: modified
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/consent; directory removed"
+  packages/hdp-provenance/:
+    status: modified
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/provenance; directory removed"
+  packages/hdp-outbox/:
+    status: modified
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/outbox; directory removed"
+  packages/hdp-ingest/:
+    status: modified
+    purpose: "git mv src into packages/hdp-api/src/hdp_api/ingest; directory removed"
+  packages/hdp-api/:
+    status: modified
+    purpose: "Absorbs hdp-ingest as hdp_api.ingest; deps gain pydantic; truthful Depth marker"
+  packages/hdp-hitl/:
+    status: new
+    purpose: "hh-hitl promoted per hdp-schema-seed FR-102; deps remap to hdp-core"
+  verticals/home-health/hh-hitl/:
+    status: modified
+    purpose: "git mv to packages/hdp-hitl; directory removed"
+  verticals/home-health/hh-oasis/:
+    status: modified
+    purpose: "git mv src into hh-scribe/src/hh_scribe/oasis; directory removed"
+  verticals/home-health/hh-skills/:
+    status: modified
+    purpose: "git mv src into hh-scribe/src/hh_scribe/skills; directory removed"
+  verticals/home-health/hh-mcp/:
+    status: modified
+    purpose: "git mv src into hh-scribe/src/hh_scribe/mcp; directory removed"
+  verticals/home-health/hh-scribe/:
+    status: modified
+    purpose: "Absorbs oasis, skills, mcp; deps gain mcp + hdp-api; deps remap to hdp-core"
+  verticals/home-health/hh-emr-sync/:
+    status: modified
+    purpose: "Deps remap hdp-outbox to hdp-core; gains src/hh_emr_sync/transport.py Protocol stub (seam contract)"
+  apps/home-health-scribe/pyproject.toml:
+    status: modified
+    purpose: "Deps remap: hh-oasis removed (inside hh-scribe), hh-hitl becomes hdp-hitl"
+  pyproject.toml:
+    status: modified
+    purpose: "tool.uv.sources shrinks to 8 workspace entries"
+  uv.lock:
+    status: modified
+    purpose: "Regenerated after member-map rewrite"
+  .commitlintrc.yaml:
+    status: modified
+    purpose: "scope-enum + x-scope-patterns match the post-trim member set"
+  README.md:
+    status: modified
+    purpose: "Architecture text reflects 8-member map; positioning language preserved"
+  CLAUDE.md:
+    status: modified
+    purpose: "Project Structure section reflects 8-member map"
+phases:
+  structural:
+    name: "Phase 1: Tracer — full member-map rewrite"
+    type: tracer
+    goal: "17 members become 8 via history-preserving git mv; workspace syncs, imports prove concept survival, test collection is collision-free."
+    shared_fate: "uv workspace cannot sync with dangling member references — removing hdp-canonical while hh-oasis still depends on it breaks every downstream command. Partial maps are not keepable intermediates; the member-map rewrite lands together or not at all. The seam Protocol stub rides along because hh-emr-sync's pyproject is rewritten here exactly once."
+    needs: []
+    context:
+      design: "## Architecture"
+      requirements:
+        - FR-001
+        - FR-002
+        - FR-003
+        - FR-004
+        - FR-005
+        - FR-006
+        - FR-009
+        - NFR-001
+        - NFR-002
+        - NFR-003
+        - NFR-004
+      files:
+        - packages/hdp-core/
+        - packages/hdp-canonical/
+        - packages/hdp-audit/
+        - packages/hdp-identity/
+        - packages/hdp-consent/
+        - packages/hdp-provenance/
+        - packages/hdp-outbox/
+        - packages/hdp-ingest/
+        - packages/hdp-api/
+        - packages/hdp-hitl/
+        - verticals/home-health/hh-hitl/
+        - verticals/home-health/hh-oasis/
+        - verticals/home-health/hh-skills/
+        - verticals/home-health/hh-mcp/
+        - verticals/home-health/hh-scribe/
+        - verticals/home-health/hh-emr-sync/
+        - apps/home-health-scribe/pyproject.toml
+        - pyproject.toml
+        - uv.lock
+      skills: []
+    validation:
+      command: "uv sync && uv run python -c 'import hdp_core.canonical, hdp_core.audit, hdp_core.identity, hdp_core.consent, hdp_core.provenance, hdp_core.outbox, hdp_api.ingest, hdp_hitl, hh_scribe.oasis, hh_scribe.skills, hh_scribe.mcp, hh_emr_sync.transport' && uv run pytest -q --co >/dev/null && test \"$(ls -d packages/*/ verticals/home-health/*/ apps/*/ | wc -l | tr -d ' ')\" = '8'"
+  config:
+    name: "Phase 2: Config — commitlint scope realignment"
+    type: config
+    goal: "scope-enum exactly matches the post-trim member set plus static scopes; every x-scope-patterns glob resolves."
+    needs:
+      - structural
+    context:
+      design: "## Decisions"
+      requirements:
+        - FR-007
+      files:
+        - .commitlintrc.yaml
+      skills: []
+    validation:
+      command: "uv run python vault/specs/package-trim/reference/check_commitlint.py"
+  docs:
+    name: "Phase 3: Docs — architecture text"
+    type: docs
+    goal: "README + CLAUDE.md describe the 8-member map; settled positioning language intact."
+    needs:
+      - structural
+    context:
+      design: "## Architecture"
+      requirements:
+        - FR-008
+      files:
+        - README.md
+        - CLAUDE.md
+      skills: []
+    validation:
+      command: "grep -q 'hdp-core' README.md && grep -q 'hdp-core' CLAUDE.md && ! grep -E 'hdp-canonical|hdp-provenance|hh-oasis' README.md CLAUDE.md"
+  verify:
+    name: "Phase 4: Verify — full acceptance sweep"
+    type: verify
+    goal: "All ACs pass against the assembled tree: CI mirror green, layering invariant holds, FR-102 satisfiability confirmed, Depth markers truthful."
+    needs:
+      - config
+      - docs
+    context:
+      design: "## Architecture"
+      requirements:
+        - FR-001
+        - FR-003
+        - FR-006
+        - FR-009
+        - NFR-001
+        - NFR-002
+        - NFR-003
+      files: []
+      skills: []
+    validation:
+      command: "just verify && uv run python vault/specs/package-trim/reference/check_layering.py && uv run python vault/specs/package-trim/reference/check_depth_markers.py && uv run python vault/specs/package-trim/reference/check_dep_union.py && git log --follow --oneline -- packages/hdp-hitl/src/hdp_hitl/__init__.py | grep -c . | awk '{exit !($1>=1)}'"
+  merge:
+    name: "Phase 5: Merge — PR to main"
+    type: merge
+    goal: "Squash-merge via /agx:pr workflow; CI green on main."
+    needs:
+      - verify
+  close:
+    name: "Phase 6: Close"
+    type: close
+    goal: "Spec rollup; bead hdp-1yi closed; GH #11 checklist ticked."
+    needs:
+      - merge
