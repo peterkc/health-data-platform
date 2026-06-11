@@ -10,21 +10,12 @@ resolution-markers = [
 members = [
     "hdp-agent",
     "hdp-api",
-    "hdp-audit",
-    "hdp-canonical",
-    "hdp-consent",
-    "hdp-identity",
-    "hdp-ingest",
+    "hdp-core",
+    "hdp-hitl",
     "hdp-observability",
-    "hdp-outbox",
-    "hdp-provenance",
     "health-data-platform",
     "hh-emr-sync",
-    "hh-hitl",
-    "hh-mcp",
-    "hh-oasis",
     "hh-scribe",
-    "hh-skills",
     "home-health-scribe",
 ]
 
@@ -968,73 +959,48 @@ version = "0.1.0"
 source = { editable = "packages/hdp-api" }
 dependencies = [
     { name = "fastapi" },
+    { name = "pydantic" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
+    { name = "pydantic", specifier = ">=2.8" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
 ]
 
 [[package]]
-name = "hdp-audit"
+name = "hdp-core"
 version = "0.1.0"
-source = { editable = "packages/hdp-audit" }
-dependencies = [
-    { name = "sqlmodel" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "sqlmodel", specifier = ">=0.0.22" }]
-
-[[package]]
-name = "hdp-canonical"
-version = "0.1.0"
-source = { editable = "packages/hdp-canonical" }
+source = { editable = "packages/hdp-core" }
 dependencies = [
     { name = "fhir-resources" },
     { name = "pydantic" },
+    { name = "sqlmodel" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "fhir-resources", specifier = ">=7.1" },
     { name = "pydantic", specifier = ">=2.8" },
+    { name = "sqlmodel", specifier = ">=0.0.22" },
 ]
 
 [[package]]
-name = "hdp-consent"
+name = "hdp-hitl"
 version = "0.1.0"
-source = { editable = "packages/hdp-consent" }
+source = { editable = "packages/hdp-hitl" }
 dependencies = [
-    { name = "sqlmodel" },
+    { name = "fastapi" },
+    { name = "hdp-core" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "sqlmodel", specifier = ">=0.0.22" }]
-
-[[package]]
-name = "hdp-identity"
-version = "0.1.0"
-source = { editable = "packages/hdp-identity" }
-dependencies = [
-    { name = "sqlmodel" },
+requires-dist = [
+    { name = "fastapi", specifier = ">=0.115" },
+    { name = "hdp-core", editable = "packages/hdp-core" },
 ]
-
-[package.metadata]
-requires-dist = [{ name = "sqlmodel", specifier = ">=0.0.22" }]
-
-[[package]]
-name = "hdp-ingest"
-version = "0.1.0"
-source = { editable = "packages/hdp-ingest" }
-dependencies = [
-    { name = "pydantic" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "pydantic", specifier = ">=2.8" }]
 
 [[package]]
 name = "hdp-observability"
@@ -1062,28 +1028,6 @@ requires-dist = [
     { name = "opentelemetry-sdk", specifier = ">=1.25" },
     { name = "structlog", specifier = ">=24" },
 ]
-
-[[package]]
-name = "hdp-outbox"
-version = "0.1.0"
-source = { editable = "packages/hdp-outbox" }
-dependencies = [
-    { name = "sqlmodel" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "sqlmodel", specifier = ">=0.0.22" }]
-
-[[package]]
-name = "hdp-provenance"
-version = "0.1.0"
-source = { editable = "packages/hdp-provenance" }
-dependencies = [
-    { name = "sqlmodel" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "sqlmodel", specifier = ">=0.0.22" }]
 
 [[package]]
 name = "health-data-platform"
@@ -1145,61 +1089,14 @@ name = "hh-emr-sync"
 version = "0.1.0"
 source = { editable = "verticals/home-health/hh-emr-sync" }
 dependencies = [
-    { name = "hdp-outbox" },
+    { name = "hdp-core" },
     { name = "httpx" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "hdp-outbox", editable = "packages/hdp-outbox" },
+    { name = "hdp-core", editable = "packages/hdp-core" },
     { name = "httpx", specifier = ">=0.28" },
-]
-
-[[package]]
-name = "hh-hitl"
-version = "0.1.0"
-source = { editable = "verticals/home-health/hh-hitl" }
-dependencies = [
-    { name = "fastapi" },
-    { name = "hdp-audit" },
-    { name = "hdp-canonical" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi", specifier = ">=0.115" },
-    { name = "hdp-audit", editable = "packages/hdp-audit" },
-    { name = "hdp-canonical", editable = "packages/hdp-canonical" },
-]
-
-[[package]]
-name = "hh-mcp"
-version = "0.1.0"
-source = { editable = "verticals/home-health/hh-mcp" }
-dependencies = [
-    { name = "hdp-api" },
-    { name = "mcp" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "hdp-api", editable = "packages/hdp-api" },
-    { name = "mcp", specifier = ">=1.2" },
-]
-
-[[package]]
-name = "hh-oasis"
-version = "0.1.0"
-source = { editable = "verticals/home-health/hh-oasis" }
-dependencies = [
-    { name = "hdp-canonical" },
-    { name = "pydantic" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "hdp-canonical", editable = "packages/hdp-canonical" },
-    { name = "pydantic", specifier = ">=2.8" },
 ]
 
 [[package]]
@@ -1209,20 +1106,21 @@ source = { editable = "verticals/home-health/hh-scribe" }
 dependencies = [
     { name = "anthropic" },
     { name = "hdp-agent" },
-    { name = "hdp-canonical" },
+    { name = "hdp-api" },
+    { name = "hdp-core" },
+    { name = "mcp" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "anthropic", specifier = ">=0.39" },
     { name = "hdp-agent", editable = "packages/hdp-agent" },
-    { name = "hdp-canonical", editable = "packages/hdp-canonical" },
+    { name = "hdp-api", editable = "packages/hdp-api" },
+    { name = "hdp-core", editable = "packages/hdp-core" },
+    { name = "mcp", specifier = ">=1.2" },
+    { name = "pydantic", specifier = ">=2.8" },
 ]
-
-[[package]]
-name = "hh-skills"
-version = "0.1.0"
-source = { editable = "verticals/home-health/hh-skills" }
 
 [[package]]
 name = "home-health-scribe"
@@ -1230,9 +1128,8 @@ version = "0.1.0"
 source = { editable = "apps/home-health-scribe" }
 dependencies = [
     { name = "fastapi" },
+    { name = "hdp-hitl" },
     { name = "hh-emr-sync" },
-    { name = "hh-hitl" },
-    { name = "hh-oasis" },
     { name = "hh-scribe" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -1240,9 +1137,8 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
+    { name = "hdp-hitl", editable = "packages/hdp-hitl" },
     { name = "hh-emr-sync", editable = "verticals/home-health/hh-emr-sync" },
-    { name = "hh-hitl", editable = "verticals/home-health/hh-hitl" },
-    { name = "hh-oasis", editable = "verticals/home-health/hh-oasis" },
     { name = "hh-scribe", editable = "verticals/home-health/hh-scribe" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
 ]
