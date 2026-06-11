@@ -10,23 +10,6 @@ rules:
         packages,
         verticals,
         apps,
-        hdp-canonical,
-        hdp-audit,
-        hdp-identity,
-        hdp-consent,
-        hdp-provenance,
-        hdp-ingest,
-        hdp-api,
-        hdp-agent,
-        hdp-outbox,
-        hdp-observability,
-        hh-oasis,
-        hh-scribe,
-        hh-hitl,
-        hh-emr-sync,
-        hh-mcp,
-        hh-skills,
-        home-health-scribe,
         docs,
         ci,
         deps,
@@ -35,6 +18,14 @@ rules:
         adr,
         spec,
         research,
+        hdp-core,
+        hdp-api,
+        hdp-agent,
+        hdp-observability,
+        hdp-hitl,
+        hh-scribe,
+        hh-emr-sync,
+        home-health-scribe,
       ]
 
 # Keep the scope-pattern map authored so tooling can discover which
@@ -44,28 +35,17 @@ x-scope-patterns:
   ci: ".github/**"
   docs:
     - "README.md"
-    - "docs/**"
     - "**/*.md"
   deps:
     - "**/pyproject.toml"
     - "uv.lock"
   infra:
     - "docker-compose.yml"
-    - "Dockerfile*"
-  hdp-canonical: "packages/hdp-canonical/**"
-  hdp-audit: "packages/hdp-audit/**"
-  hdp-identity: "packages/hdp-identity/**"
-  hdp-consent: "packages/hdp-consent/**"
-  hdp-provenance: "packages/hdp-provenance/**"
-  hdp-ingest: "packages/hdp-ingest/**"
+  hdp-core: "packages/hdp-core/**"
   hdp-api: "packages/hdp-api/**"
   hdp-agent: "packages/hdp-agent/**"
-  hdp-outbox: "packages/hdp-outbox/**"
   hdp-observability: "packages/hdp-observability/**"
-  hh-oasis: "verticals/home-health/hh-oasis/**"
+  hdp-hitl: "packages/hdp-hitl/**"
   hh-scribe: "verticals/home-health/hh-scribe/**"
-  hh-hitl: "verticals/home-health/hh-hitl/**"
   hh-emr-sync: "verticals/home-health/hh-emr-sync/**"
-  hh-mcp: "verticals/home-health/hh-mcp/**"
-  hh-skills: "verticals/home-health/hh-skills/**"
   home-health-scribe: "apps/home-health-scribe/**"
