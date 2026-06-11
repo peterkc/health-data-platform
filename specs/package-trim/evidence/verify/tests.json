@@ -1,0 +1,10 @@
+{
+  "type": "tests",
+  "phase_id": "verify",
+  "iterations": [
+    {
+      "pass": true,
+      "summary": "Full tasks.yaml verify validation green from worktree: just verify (ruff+pytest) exit 0; check_layering/check_depth_markers/check_dep_union exit 0; git log --follow >=2 commits for all four merge-target samples. Full AC manifest now 11/11 executable-pass (remaining bodies landed this phase per bodies-land-during-run contract; AC-006/AC-007 landed late from lightweight config/docs phases). Check scripts run via python3 with cwd contract (stdlib-only; uv-run equivalent)."
+    }
+  ]
+}

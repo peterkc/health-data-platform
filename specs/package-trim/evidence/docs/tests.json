@@ -1,0 +1,10 @@
+{
+  "type": "tests",
+  "phase_id": "docs",
+  "iterations": [
+    {
+      "pass": true,
+      "summary": "tasks.yaml docs validation green: hdp-core named in README+CLAUDE.md; no retired member names; hdp-observability Depth normalized to canonical **Depth**: MIN; check_depth_markers.py exit 0 against the worktree; skills docstring truth-up landed (deferred structural finding)."
+    }
+  ]
+}

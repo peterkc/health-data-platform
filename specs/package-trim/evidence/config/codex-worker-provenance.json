@@ -1,0 +1,24 @@
+{
+  "schema_version": "agx-codex-provenance/v1",
+  "dispatched_at_utc": "2026-06-11T20:33:27Z",
+  "spec_name": "package-trim",
+  "phase_id": "config",
+  "role": "worker",
+  "worker_choice": "codex",
+  "model": "gpt-5.5",
+  "invocation_id": "e102efb6-b7c6-4e66-af8b-29e63f0d5e71",
+  "outcome": "success",
+  "duration_ms": 48999,
+  "tokens": {
+    "input": 80562,
+    "cached_input": 63360,
+    "output": 1880,
+    "reasoning_output": 130
+  },
+  "schema_path": null,
+  "schema_valid": true,
+  "retry_count": 0,
+  "raw_payload_paths": [
+    "/Volumes/health-data/vault/specs/package-trim/evidence/config/codex-worker-raw.json"
+  ]
+}

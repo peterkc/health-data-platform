@@ -1,0 +1,10 @@
+{
+  "type": "rebase-map",
+  "reason": "origin/main advanced two CLAUDE.md commits (8bc2e37, f7b6b10 — guiding-principles digest) after the feature branch was cut at a4d2cba; rebased before the docs phase so its CLAUDE.md edits apply to the current text instead of conflicting at merge.",
+  "branch": "feat/package-trim",
+  "mapping": [
+    {"phase": "structural", "close_meta_sha": "f30e25a0b053d9638c5726795088de67930d3bed", "post_rebase_sha": "b493f6c"},
+    {"phase": "config", "close_meta_sha": "a40e1a79a6b938793695b84e5ac358dd4f51389c", "post_rebase_sha": "559bd15"}
+  ],
+  "note": "Phase content is unchanged (rebase was conflict-free; main's commits touched only CLAUDE.md, which neither phase modified). The merge phase records the final squash SHA."
+}

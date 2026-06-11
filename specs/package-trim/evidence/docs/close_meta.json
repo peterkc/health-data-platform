@@ -1,0 +1,13 @@
+{
+  "type": "close_meta",
+  "phase_id": "docs",
+  "iterations": [
+    {
+      "metadata": {
+        "closed_at": "2026-06-11T21:02:01.747709+00:00",
+        "phase_id": "docs",
+        "commit": "fcda9e2373b5f7ac3d051d75f2dde0d893268624"
+      }
+    }
+  ]
+}

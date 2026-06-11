@@ -1,0 +1,13 @@
+{
+  "type": "close_meta",
+  "phase_id": "config",
+  "iterations": [
+    {
+      "metadata": {
+        "closed_at": "2026-06-11T20:34:37.644990+00:00",
+        "phase_id": "config",
+        "commit": "a40e1a79a6b938793695b84e5ac358dd4f51389c"
+      }
+    }
+  ]
+}

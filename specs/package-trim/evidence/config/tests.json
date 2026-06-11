@@ -1,0 +1,10 @@
+{
+  "type": "tests",
+  "phase_id": "config",
+  "iterations": [
+    {
+      "pass": true,
+      "summary": "check_commitlint.py exit 0 against the worktree (cwd run contract): scope-enum == 12 static + 8 post-trim members; all x-scope-patterns globs resolve; dead globs docs/** and Dockerfile* dropped per SPEC.md decision."
+    }
+  ]
+}

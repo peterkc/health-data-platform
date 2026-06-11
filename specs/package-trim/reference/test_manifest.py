@@ -10,8 +10,6 @@ import re
 import subprocess
 from pathlib import Path
 
-import pytest
-
 ROOT = Path.cwd()
 
 
@@ -32,17 +30,28 @@ def test_workspace_resolves_exactly_eight_members():
 
 # --- AC-002
 def test_ci_mirror_green():
-    pytest.skip("verify phase: just verify (ruff + pytest) exits 0")
+    res = _run(["just", "verify"])
+    assert res.returncode == 0, (res.stdout + res.stderr)[-1000:]
 
 
 # --- AC-003
 def test_layering_invariant_holds():
-    pytest.skip("verify phase: reference/check_layering.py exits 0")
+    res = _run(["python3", str(Path(__file__).with_name("check_layering.py"))])
+    assert res.returncode == 0, res.stderr[-1000:]
 
 
 # --- AC-004
 def test_history_preserved_per_merge_target():
-    pytest.skip("verify phase: git log --follow reaches pre-move commits for one moved file per merge target (hdp-hitl, hdp-core, hdp-api, hh-scribe)")
+    samples = [
+        "packages/hdp-hitl/src/hdp_hitl/__init__.py",
+        "packages/hdp-core/src/hdp_core/audit/__init__.py",
+        "packages/hdp-api/src/hdp_api/ingest/__init__.py",
+        "verticals/home-health/hh-scribe/src/hh_scribe/oasis/__init__.py",
+    ]
+    for f in samples:
+        res = _run(["git", "log", "--follow", "--oneline", "--", f])
+        commits = [line for line in res.stdout.splitlines() if line.strip()]
+        assert len(commits) >= 2, f"{f}: --follow reaches only {len(commits)} commit(s)"
 
 
 # --- AC-005
@@ -59,17 +68,24 @@ def test_emr_sync_transport_seam_is_transport_agnostic():
 
 # --- AC-006
 def test_commitlint_scopes_match_member_set():
-    pytest.skip("config phase: reference/check_commitlint.py exits 0")
+    res = _run(["python3", str(Path(__file__).with_name("check_commitlint.py"))])
+    assert res.returncode == 0, res.stderr[-1000:]
 
 
 # --- AC-007
 def test_architecture_docs_reflect_eight_member_map():
-    pytest.skip("docs phase: hdp-core present; removed member names absent; positioning intact")
+    readme = (ROOT / "README.md").read_text()
+    claude = (ROOT / "CLAUDE.md").read_text()
+    assert "hdp-core" in readme and "hdp-core" in claude
+    for retired in ("hdp-canonical", "hdp-provenance", "hh-oasis"):
+        assert retired not in readme and retired not in claude, retired
+    assert "AI-native workflow and governance layer" in readme
 
 
 # --- AC-008
 def test_depth_markers_truthful():
-    pytest.skip("verify phase: reference/check_depth_markers.py exits 0")
+    res = _run(["python3", str(Path(__file__).with_name("check_depth_markers.py"))])
+    assert res.returncode == 0, res.stderr[-1000:]
 
 
 # --- AC-009
@@ -91,4 +107,5 @@ def test_pytest_collection_collision_free():
 
 # --- AC-011
 def test_dependency_union_zero_new_runtime_deps():
-    pytest.skip("verify phase: reference/check_dep_union.py exits 0 against target-map.json")
+    res = _run(["python3", str(Path(__file__).with_name("check_dep_union.py"))])
+    assert res.returncode == 0, res.stderr[-1000:]
