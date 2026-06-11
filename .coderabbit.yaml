@@ -113,4 +113,4 @@ knowledge_base:
 
 chat:
   auto_reply: true
-  allow_non_org_members: false
+  allow_non_org_members: true   # Public repo — external contributors welcome
