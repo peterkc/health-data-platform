@@ -14,6 +14,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Each job runs the same `just` recipe a contributor runs locally, so CI and
+# `just verify` / `just ci` can never drift.
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -29,10 +32,10 @@ jobs:
         run: uv python install 3.13
       - name: Install dependencies
         run: uv sync --all-extras
-      - name: Lint
-        run: uv run ruff check
-      - name: Format check
-        run: uv run ruff format --check
+      - name: Install just
+        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+      - name: Lint + format check
+        run: just lint
 
   typecheck:
     runs-on: ubuntu-latest
@@ -48,8 +51,10 @@ jobs:
         run: uv python install 3.13
       - name: Install dependencies
         run: uv sync --all-extras
+      - name: Install just
+        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - name: Type check
-        run: uv run mypy packages/*/src verticals/home-health/*/src apps/*/src
+        run: just typecheck
 
   test:
     runs-on: ubuntu-latest
@@ -65,8 +70,10 @@ jobs:
         run: uv python install 3.13
       - name: Install dependencies
         run: uv sync --all-extras
-      - name: Run tests
-        run: uv run pytest --cov --cov-report=xml --junitxml=junit.xml
+      - name: Install just
+        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+      - name: Tests + coverage
+        run: just cov
       - name: Upload test results
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
@@ -97,23 +104,29 @@ jobs:
         run: uv python install 3.13
       - name: Install dependencies
         run: uv sync --all-extras
+      - name: Install just
+        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - name: Audit dependencies (pip-audit)
         # Audits the resolved environment via package metadata; --skip-editable
         # ignores first-party workspace packages. Suppress a specific advisory
         # with --ignore-vuln <ID> (with rationale) if a fix is not yet available.
-        run: uv run --with pip-audit pip-audit --skip-editable
+        run: just audit
 
   ci:
     if: always()
     needs: [lint, typecheck, test, security]
     runs-on: ubuntu-latest
     steps:
-      - name: Evaluate results
+      - name: Require all jobs to succeed
+        # Results come from the (trusted) needs context via env, never inlined
+        # into the script — and any non-success (failure/cancelled/skipped) fails.
+        env:
+          RESULTS: ${{ needs.lint.result }} ${{ needs.typecheck.result }} ${{ needs.test.result }} ${{ needs.security.result }}
         run: |
-          if [[ "${{ needs.lint.result }}" == "failure" \
-             || "${{ needs.typecheck.result }}" == "failure" \
-             || "${{ needs.test.result }}" == "failure" \
-             || "${{ needs.security.result }}" == "failure" ]]; then
-            echo "One or more required jobs failed"
-            exit 1
-          fi
+          for r in $RESULTS; do
+            if [[ "$r" != "success" ]]; then
+              echo "A required job did not succeed: $r"
+              exit 1
+            fi
+          done
+          echo "All required jobs succeeded."

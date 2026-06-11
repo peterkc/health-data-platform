@@ -56,9 +56,10 @@ test-integration:
 dev:
     uv run uvicorn home_health_scribe.main:app --reload --host 0.0.0.0 --port 8000
 
-# Lint without modifying files.
+# Lint + format check, no modifications — the CI lint gate.
 lint:
     uv run ruff check .
+    uv run ruff format --check .
 
 # Auto-format in place.
 fmt:
@@ -68,9 +69,9 @@ fmt:
 typecheck:
     uv run mypy packages/*/src verticals/home-health/*/src apps/*/src
 
-# Tests with coverage (term-missing locally, xml for CI upload).
+# Tests with coverage (term-missing locally, xml + junit for CI upload).
 cov:
-    uv run pytest --cov --cov-report=term-missing --cov-report=xml
+    uv run pytest --cov --cov-report=term-missing --cov-report=xml --junitxml=junit.xml
 
 # Audit resolved dependencies for known CVEs (skips first-party packages).
 audit:
@@ -79,8 +80,8 @@ audit:
 # Full verification gate: lint + type-check + tests.
 verify: lint typecheck test
 
-# Mirror GitHub Actions locally.
-ci: lint typecheck test
+# Mirror GitHub Actions locally (lint + type-check + tests + dependency audit).
+ci: lint typecheck test audit
 
 # Install git hooks (run once after cloning).
 install-hooks:
