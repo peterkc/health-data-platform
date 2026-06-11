@@ -5,7 +5,6 @@ tone_instructions: "Focus on correctness and logic errors. Skip style issues tha
 
 reviews:
   profile: "assertive"
-  timeout: 900000
 
   request_changes_workflow: true
   fail_commit_status: true
@@ -14,17 +13,20 @@ reviews:
   suggested_labels: false
   auto_apply_labels: true
 
+  # Exclude-style filtering (agx pattern): everything is reviewable except
+  # the paths below. The earlier include-style allowlist made infra files
+  # (docker-compose, pyproject, workflows) invisible to CR — observed on
+  # PR #15 ("All files are ignored"). Markdown stays reviewable on purpose:
+  # README/SECURITY are public-facing product for this repo.
   path_filters:
-    - "packages/**/*.py"
-    - "verticals/**/*.py"
-    - "apps/**/*.py"
-    - "!**/test_smoke.py"
+    - "!vault/**"               # Orphan-branch worktree (design prose)
+    - "!.beads/**"              # Issue tracking database
+    - "!.cache/**"              # Ephemeral caches
+    - "!.tmp/**"                # Temp scratch files
     - "!**/.venv/**"
-    - "!vault/**"
     - "!**/__pycache__/**"
     - "!**/uv.lock"
-    - "!**/*.md"
-    - "!.cache/**"
+    - "!**/test_smoke.py"       # assert-True placeholders
 
   high_level_summary: true
   poem: false
@@ -50,12 +52,29 @@ reviews:
         Check recipe dependencies and cross-recipe consistency. Verify that
         recipes referenced in composite recipes (e.g., 'verify') have their
         tool dependencies documented or bootstrapped.
+    - path: ".github/workflows/**"
+      instructions: |
+        Flag unpinned actions (use SHA + comment with version tag). Check that
+        permissions are minimal. Verify concurrency groups match workflow scope.
+    - path: "**"
+      instructions: |
+        `vault/` and `.beads/` are orphan-branch worktrees. Their content
+        lives on the `vault` and `beads` branches and is mounted into the
+        working tree at `<repo-root>/vault/` and `<repo-root>/.beads/`, but
+        is ABSENT from the feature-branch checkout this review runs against.
+        Do NOT flag references to `vault/...` or `.beads/...` paths (code
+        spans, comments, or directive strings) as broken, missing, or
+        non-existent — they are valid cross-branch citations that resolve in
+        the mounted working tree. Tracked markdown links vault content via
+        absolute GitHub URLs on the `vault` branch (e.g.
+        `https://github.com/peterkc/health-data-platform/tree/vault/...`);
+        bare `vault/...` strings are intentional path references, not links.
 
   auto_review:
     enabled: false
     labels:
       - "coderabbit"
-    drafts: false
+    drafts: true                # Review draft PRs when labeled (draft-first workflow)
     ignore_title_keywords:
       - "WIP"
       - "DO NOT MERGE"
@@ -67,6 +86,11 @@ reviews:
   tools:
     ruff:
       enabled: true
+    # Give CR up to 15 min to wait on CI so it reviews final check states,
+    # not in-flight ones (replaces the non-schema `reviews.timeout` key).
+    github-checks:
+      enabled: true
+      timeout_ms: 900000
     languagetool:
       enabled: true
       enabled_only: false
