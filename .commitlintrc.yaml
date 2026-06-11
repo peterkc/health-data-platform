@@ -37,8 +37,8 @@ rules:
         research,
       ]
 
-# HDP does not yet have an ACF-style /commit skill, but keep the
-# scope-pattern map authored so it is discoverable.
+# Keep the scope-pattern map authored so tooling can discover which
+# paths map to which commit scopes.
 x-scope-patterns:
   workspace: "pyproject.toml"
   ci: ".github/**"
