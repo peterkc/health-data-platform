@@ -60,6 +60,18 @@ across workspace members. Keep this — removing it breaks multi-package tests.
 - Signed commits (do not use `--no-gpg-sign`)
 - `vault/` orphan-branch worktree (`vault` branch) — design knowledge: ADRs,
   specs, research, patterns. Gitignored on main, separate commit history.
+- Spec vs plan mode — litmus: "Will anyone need this plan after the session
+  ends, and may it be public? Both yes → `/agx:spec` (artifact lands in
+  `vault/`, which is public). Otherwise plan mode, with beads carrying any
+  private detail." Irreversible ops (history rewrite, visibility flip,
+  force-push) always get plan-mode user sign-off in the main session.
+- Delegation — main session orchestrates; `/fork` for parallel work needing
+  this session's context (forks inherit the conversation; dispatch promptly
+  so the shared prefix rides the ~5-min prompt cache). Fresh subagents for
+  self-contained tasks the bead/issue fully describes; Codex for bounded
+  implementation. One mutating worker per git surface (main / vault /
+  beads); orchestrator adjudicates every result before the next dependent
+  step. Irreversible ops never delegate.
 
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
