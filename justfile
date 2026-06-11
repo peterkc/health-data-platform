@@ -8,7 +8,10 @@ default: verify
 # --- Docker Compose -----------------------------------------------------------
 
 # Bring up Postgres 18 + Mongo 7 + adminer in the background.
+# Bootstraps .env from .env.example on first run — compose has no inline
+# password defaults, so .env must exist.
 up:
+    @[ -f .env ] || cp .env.example .env
     docker compose up -d
 
 # Tear down the stack, leaving volumes in place.

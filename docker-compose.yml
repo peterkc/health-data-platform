@@ -1,5 +1,9 @@
 # Local dev stack for the health-data-platform.
 # Non-standard host ports are chosen to avoid clobbering other local instances.
+#
+# Passwords carry no inline defaults — they come from .env (created from
+# .env.example by `just up` on first run). Non-secret values (user, db) keep
+# dev defaults inline. Never reuse dev credentials beyond a local laptop stack.
 
 services:
   postgres:
@@ -7,9 +11,10 @@ services:
     container_name: hdp-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: hdp
-      POSTGRES_PASSWORD: hdp
-      POSTGRES_DB: hdp
+      POSTGRES_USER: ${HDP_POSTGRES_USER:-hdp}
+      # Required from .env — run `just up` or copy .env.example to .env
+      POSTGRES_PASSWORD: ${HDP_POSTGRES_PASSWORD:?}
+      POSTGRES_DB: ${HDP_POSTGRES_DB:-hdp}
     ports:
       - "5437:5432"
     # Postgres 18+ expects the data directory under a major-version subdir of
@@ -18,7 +23,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hdp -d hdp"]
+      test: ["CMD-SHELL", "pg_isready -U ${HDP_POSTGRES_USER:-hdp} -d ${HDP_POSTGRES_DB:-hdp}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -28,8 +33,9 @@ services:
     container_name: hdp-mongo
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: hdp
-      MONGO_INITDB_ROOT_PASSWORD: hdp
+      MONGO_INITDB_ROOT_USERNAME: ${HDP_MONGO_USER:-hdp}
+      # Required from .env — run `just up` or copy .env.example to .env
+      MONGO_INITDB_ROOT_PASSWORD: ${HDP_MONGO_PASSWORD:?}
     ports:
       - "27037:27017"
     volumes:

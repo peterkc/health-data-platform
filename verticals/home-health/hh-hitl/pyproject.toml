@@ -4,7 +4,7 @@
     description = "Human-in-the-loop checkpoint protocol + API."
     readme = "README.md"
     requires-python = ">=3.13"
-    license = { text = "MIT" }
+    license = "MIT"
     authors = [{ name = "Peter K. Chan", email = "peterkc@hey.com" }]
     dependencies = [
         "fastapi>=0.115",

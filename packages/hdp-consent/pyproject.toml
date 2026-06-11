@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Access grants + purposes + OpenFGA integration point."
 readme = "README.md"
 requires-python = ">=3.13"
-license = { text = "MIT" }
+license = "MIT"
 authors = [{ name = "Peter K. Chan", email = "peterkc@hey.com" }]
 dependencies = [
     "sqlmodel>=0.0.22",
