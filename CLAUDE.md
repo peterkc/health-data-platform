@@ -4,10 +4,13 @@
 
 Python-first multi-vertical health data platform. Three layers:
 
-1. **Platform primitives** (`packages/hdp-*`) — canonical data models, audit,
-   identity, consent, provenance, ingest, API, agent runtime, outbox.
+1. **Platform primitives** (`packages/hdp-*`) — `hdp-core` carries canonical,
+   audit, identity, consent, provenance, and outbox submodules; `hdp-api`
+   carries ingest. `hdp-agent`, `hdp-observability`, and `hdp-hitl` provide
+   agent runtime, telemetry/health, and review primitives.
 2. **Verticals** (`verticals/<vertical>/<component>`) — domain-specific
-   components. Currently: `home-health/hh-{oasis,scribe,hitl,emr-sync,mcp,skills}`.
+   components. Currently: `home-health/hh-{scribe,emr-sync}`;
+   `hh-scribe` carries oasis, skills, and mcp submodules.
 3. **Apps** (`apps/*`) — composed deployables. Currently:
    `apps/home-health-scribe` wires a home-health deployment.
 
@@ -25,15 +28,15 @@ questions in the ADR's "How to Apply". Rule source:
 
 ## Stack
 
-Python >=3.13, uv workspace (16 members), FastAPI, SQLModel, Postgres 18,
+Python >=3.13, uv workspace (8 members), FastAPI, SQLModel, Postgres 18,
 MongoDB 7, Docker Compose for local dev.
 
 ## Project Structure
 
 ```
-packages/           # Platform primitives (hdp-*)
+packages/           # hdp-core, hdp-api, hdp-agent, hdp-observability, hdp-hitl
 verticals/
-  home-health/      # hh-oasis, hh-scribe, hh-hitl, hh-emr-sync, hh-mcp, hh-skills
+  home-health/      # hh-scribe, hh-emr-sync
 apps/
   home-health-scribe/   # Composed app
 docker-compose.yml  # Postgres 18 + Mongo 7 + adminer

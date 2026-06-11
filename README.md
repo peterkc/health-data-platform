@@ -40,10 +40,11 @@ Three layers, dependencies pointing strictly downward:
          FHIR R4 / IPS / OMOP are projections, not storage
 ```
 
-The platform layer is the governance spine: canonical domain records carrying
-trust level and provenance, grant-based consent with 42 CFR Part 2 fail-closed
-category semantics, append-only audit, identity linkage, and an agent runtime
-whose confidence scores feed the review queue. The vertical layer owns the
+The platform layer is the governance spine: `hdp-core` carries canonical
+domain records with trust level and provenance, grant-based consent with
+42 CFR Part 2 fail-closed category semantics, append-only audit, identity
+linkage, and outbox primitives alongside the agent runtime whose confidence
+scores feed the review queue. The vertical layer owns the
 domain: OASIS-E modeled as first-class structured data, a
 `suggested → reviewed → accepted/edited/rejected` review state machine with a
 finalize gate, and a transport-agnostic EMR adapter contract — HTTP APIs where

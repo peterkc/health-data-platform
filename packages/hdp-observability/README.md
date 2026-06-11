@@ -2,7 +2,7 @@
 
 OpenTelemetry + structured logging + health/readiness primitives for HDP services.
 
-## Status — MIN depth
+**Depth**: MIN
 
 This package ships as a **scaffold**. The public interfaces are fully typed and
 documented; the bodies raise `NotImplementedError` and land with M3 service
