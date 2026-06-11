@@ -10,9 +10,13 @@ import sys
 import tomllib
 from pathlib import Path
 
-ROOT = Path(__file__).resolve()
-while not (ROOT / "pyproject.toml").exists() or ROOT == ROOT.parent:
-    ROOT = ROOT.parent
+# Run contract: invoke with the workspace root as cwd (main checkout or a
+# feature worktree). __file__-based walk-up was amended at run time: the script
+# lives in vault/, so it always resolved the MAIN checkout.
+ROOT = Path.cwd()
+if not (ROOT / "pyproject.toml").exists():
+    print("run from the workspace root (pyproject.toml not in cwd)", file=sys.stderr)
+    sys.exit(2)
 
 VERTICAL_PREFIXES = ("hh-",)
 APP_NAMES = {"home-health-scribe"}

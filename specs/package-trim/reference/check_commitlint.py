@@ -14,9 +14,14 @@ import sys
 from glob import glob
 from pathlib import Path
 
-ROOT = Path(__file__).resolve()
-while not (ROOT / ".commitlintrc.yaml").exists() or ROOT == ROOT.parent:
-    ROOT = ROOT.parent
+# Run contract: invoke with the workspace root as cwd (main checkout or a
+# feature worktree). __file__-based walk-up was amended at run time: the script
+# lives in vault/, so walking up from __file__ always resolved the MAIN
+# checkout and could never validate a feature worktree.
+ROOT = Path.cwd()
+if not (ROOT / ".commitlintrc.yaml").exists():
+    print("run from the workspace root (.commitlintrc.yaml not in cwd)", file=sys.stderr)
+    sys.exit(2)
 
 STATIC = {"workspace", "packages", "verticals", "apps", "docs", "ci", "deps",
           "infra", "vault", "adr", "spec", "research"}
