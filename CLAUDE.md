@@ -13,20 +13,15 @@ Python-first multi-vertical health data platform. Three layers:
 
 ## Guiding Principles
 
-`vault/adr/0001-guiding-principles.md` (vault branch — public). Five
-principles, three concentric rings; inner ring wins conflicts:
-
 > **Provenance. Judgment. Consent. Resilience. Leverage.**
 
-P1–P3 (inner: AI output is a proposal, not a record; AI drafts, humans
-sign; data moves only with permission) constrain P4 (the failing step is
-the normal path) constrain P5 (be the layer, not the silo; complexity must
-be earned). Before designing a feature, ask: traceable to source (P1)?
-human gate structural (P2)? what permission moves this data (P3)? safe to
-re-run when it fails halfway (P4)? does the ecosystem already provide it
-(P5)? New ADRs name the principles they serve in Decision Drivers. The
-same constitution governs engineering agents: verify before asserting,
-adjudicate generated output, delete unearned structure.
+Inner ring (P1 Provenance, P2 Judgment, P3 Consent) constrains P4
+Resilience constrains P5 Leverage; when principles conflict, inner wins.
+New ADRs name the principles they serve in Decision Drivers; the same
+constitution governs engineering agents. Apply via the five feature
+questions in the ADR's "How to Apply". Rule source:
+`vault/adr/0001-guiding-principles.md` (vault worktree, or the public
+`vault` branch when not mounted).
 
 ## Stack
 
