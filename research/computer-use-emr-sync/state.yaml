@@ -152,7 +152,7 @@ decisions:
         reason_rejected: "#18 explicitly wants taxonomy accrued from spike runs; literature rows would be unverified filler"
   - section: "Build-vs-adopt: framework evaluation"
     proposed_by: ai
-    revised_by: none   # pending user ratification
+    revised_by: "user (ratified 2026-06-11, main session)"
     rationale: >
       Adopt foundations, own the domain layer: Playwright (Apache-2.0) for the
       deterministic loop, DBOS (MIT, Postgres-embedded) for checkpoint/resume;
@@ -171,7 +171,7 @@ decisions:
         reason_rejected: "External cluster to operate; DBOS covers the need embedded in Postgres at this throughput — Temporal is the migrate-to-if-walls-hit path"
   - section: Cloud deployment
     proposed_by: ai
-    revised_by: none   # pending user ratification
+    revised_by: "user (ratified 2026-06-11, main session)"
     rationale: >
       Spike runs local/single-VM (synthetic data). Production-shaped reference
       topology: self-hosted container workers (Fargate-class) + Postgres
