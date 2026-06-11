@@ -1090,14 +1090,10 @@ version = "0.1.0"
 source = { editable = "verticals/home-health/hh-emr-sync" }
 dependencies = [
     { name = "hdp-core" },
-    { name = "httpx" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "hdp-core", editable = "packages/hdp-core" },
-    { name = "httpx", specifier = ">=0.28" },
-]
+requires-dist = [{ name = "hdp-core", editable = "packages/hdp-core" }]
 
 [[package]]
 name = "hh-scribe"
