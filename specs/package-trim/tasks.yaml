@@ -52,6 +52,12 @@ manifest:
   apps/home-health-scribe/pyproject.toml:
     status: modified
     purpose: "Deps remap: hh-oasis removed (inside hh-scribe), hh-hitl becomes hdp-hitl"
+  apps/home-health-scribe/README.md:
+    status: modified
+    purpose: "TODO line truth-up: compose list drops hh-oasis (inside hh-scribe), hh-hitl becomes hdp-hitl (verify-phase codex reviewer finding — file was missing from the original manifest)"
+  justfile:
+    status: modified
+    purpose: "db-migrate comment truth-up: hdp-canonical/hdp-audit → hdp-core submodules (verify-phase whole-tree sweep after the codex finding; same stale-name class)"
   pyproject.toml:
     status: modified
     purpose: "tool.uv.sources shrinks to 8 workspace entries"

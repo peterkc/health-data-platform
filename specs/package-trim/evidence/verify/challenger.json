@@ -1,0 +1,64 @@
+{
+  "type": "challenger",
+  "phase_id": "verify",
+  "iterations": [
+    {
+      "per_requirement": [
+        {
+          "id": "FR-001",
+          "status": "pass"
+        },
+        {
+          "id": "FR-002",
+          "status": "pass"
+        },
+        {
+          "id": "FR-003",
+          "status": "pass"
+        },
+        {
+          "id": "FR-004",
+          "status": "pass"
+        },
+        {
+          "id": "FR-005",
+          "status": "pass"
+        },
+        {
+          "id": "FR-006",
+          "status": "pass"
+        },
+        {
+          "id": "FR-007",
+          "status": "pass"
+        },
+        {
+          "id": "FR-008",
+          "status": "pass"
+        },
+        {
+          "id": "FR-009",
+          "status": "pass"
+        },
+        {
+          "id": "NFR-001",
+          "status": "pass"
+        },
+        {
+          "id": "NFR-002",
+          "status": "pass"
+        },
+        {
+          "id": "NFR-003",
+          "status": "pass"
+        },
+        {
+          "id": "AC-manifest",
+          "status": "pass"
+        }
+      ],
+      "violations": [],
+      "recommendation": "compliant"
+    }
+  ]
+}

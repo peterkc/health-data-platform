@@ -1,0 +1,13 @@
+{
+  "type": "review-claude",
+  "phase_id": "verify",
+  "iterations": [
+    {
+      "score": 9.4,
+      "min_dim": 9,
+      "verdict": "correct",
+      "summary": "Round 2: codex r1 finding (app README retired names) fixed + generalized to whole-tree sweep (justfile also caught); manifest extended; 11/11 ACs pass; zero findings.",
+      "iterations": 2
+    }
+  ]
+}

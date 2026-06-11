@@ -1,0 +1,10 @@
+{
+  "type": "peerreview",
+  "phase_id": "verify",
+  "iterations": [
+    {
+      "pass": true,
+      "summary": "Fresh-context Opus challenger (a563b26632c4fee58, 14/14 grounded) + two reviewer rounds across both vendors."
+    }
+  ]
+}

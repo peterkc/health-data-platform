@@ -1,0 +1,10 @@
+{
+  "type": "cleanup",
+  "phase_id": "verify",
+  "iterations": [
+    {
+      "skipped": true,
+      "reason": "no_source_files"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "agx-codex-provenance/v1",
+  "dispatched_at_utc": "2026-06-11T21:24:15Z",
+  "spec_name": "package-trim",
+  "phase_id": "verify",
+  "role": "reviewer",
+  "worker_choice": "codex",
+  "model": "gpt-5.5",
+  "invocation_id": "f700527d-0d99-499d-9495-418dfc23071b",
+  "outcome": "success",
+  "duration_ms": 137173,
+  "tokens": {
+    "input": 441289,
+    "cached_input": 362752,
+    "output": 6253,
+    "reasoning_output": 1412
+  },
+  "schema_path": "/Volumes/agx/plugins/agx/skills/spec/schemas/reviewer.schema.json",
+  "schema_valid": true,
+  "retry_count": 0,
+  "raw_payload_paths": [
+    "/Volumes/health-data/vault/specs/package-trim/evidence/verify/codex-reviewer-raw.json"
+  ]
+}
