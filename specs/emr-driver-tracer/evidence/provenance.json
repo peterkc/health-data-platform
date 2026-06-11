@@ -1,0 +1,23 @@
+{
+  "type": "provenance",
+  "iterations": [
+    {
+      "timestamp": "2026-06-11T22:30:00Z",
+      "and_gate": {
+        "claude": {
+          "weighted_avg": 9.0,
+          "min_dim": 9,
+          "round1": 8.7
+        },
+        "codex": {
+          "verdict": "approve",
+          "round1": "needs-attention"
+        },
+        "variance": "none",
+        "converged_finding_round1": "NFR-004 missing AC (both vendors)"
+      },
+      "clarify_rounds": 1,
+      "needs_clarification_count": 0
+    }
+  ]
+}

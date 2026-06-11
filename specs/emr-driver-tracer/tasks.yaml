@@ -1,0 +1,204 @@
+# emr-driver-tracer — tracer-bullet for the computer-use EMR sync driver (GH #18 / #14)
+# Phases sequenced by `needs:`; per-phase `type` drives gate dispatch.
+#
+# Manifest paths are relative to the emr-sync-driver repository root, EXCEPT
+# entries prefixed `vault/` which live in the HDP repository (hub feedback).
+# Code phases execute in a clone of emr-sync-driver; evidence records here.
+manifest:
+  pyproject.toml:
+    status: new
+    purpose: "uv project: playwright, dbos, typer, fastapi, pydantic; ruff + mypy + pytest config (fallback-eval later adds the stagehand dep as part of its diff)"
+  LICENSE:
+    status: new
+    purpose: "MIT (FR-001)"
+  README.md:
+    status: new
+    purpose: "What/why/run-it; links to the HDP research hub; public-reader hygiene (NFR-004)"
+  .github/workflows/ci.yml:
+    status: new
+    purpose: "ruff + mypy + pytest on push/PR (NFR-001); SHA-pinned actions"
+  .gitignore:
+    status: new
+    purpose: "Excludes .env, session-state dir, traces, __pycache__, .venv"
+  .env.example:
+    status: new
+    purpose: "Sandbox creds + ports template; real values never committed"
+  docker-compose.yml:
+    status: new
+    purpose: "Pinned OpenEMR + Postgres (DBOS system DB); synthetic seed (FR-002)"
+  justfile:
+    status: new
+    purpose: "up/down/seed/run/verify recipes mirroring CI"
+  src/emr_sync_driver/models.py:
+    status: new
+    purpose: "Pydantic models: Job, JobStatus, AuditEvent, FailureClass, SelectorMap (reference/models.py contract)"
+  src/emr_sync_driver/browser.py:
+    status: new
+    purpose: "Playwright session lifecycle: programmatic login, storage_state custody (FR-009), egress allowlist routing (FR-008)"
+  src/emr_sync_driver/selectors.py:
+    status: new
+    purpose: "Versioned selector map for the pinned OpenEMR; load + validate (typed errors per NFR-002)"
+  src/emr_sync_driver/audit.py:
+    status: new
+    purpose: "Append-only audit store + action-by-action replay (FR-005)"
+  src/emr_sync_driver/failures.py:
+    status: new
+    purpose: "Failure classification dead-session|latency|selector-drift|unknown before retry (FR-007)"
+  src/emr_sync_driver/workflows.py:
+    status: new
+    purpose: "DBOS workflow + steps for the field-roundtrip job; idempotency keys on writes (FR-003/FR-004)"
+  src/emr_sync_driver/cli.py:
+    status: new
+    purpose: "Typer CLI: run/resume/status/audit replay (FR-006; reference/cli.py contract)"
+  src/emr_sync_driver/api.py:
+    status: new
+    purpose: "FastAPI thin surface: submit/status/resume + OpenAPI (FR-006)"
+  src/emr_sync_driver/fallback.py:
+    status: new
+    purpose: "Drift-recovery seam Protocol; deterministic path makes zero LLM calls; Stagehand BYOB impl lands in fallback-eval phase (FR-010)"
+  tests/test_sandbox.py:
+    status: new
+    purpose: "Sandbox up + pinned + seeded probe (AC-002)"
+  tests/test_roundtrip.py:
+    status: new
+    purpose: "Field round-trip E2E (AC-003)"
+  tests/test_audit.py:
+    status: new
+    purpose: "Audit replay completeness + ordering (AC-005)"
+  tests/test_api.py:
+    status: new
+    purpose: "Thin API job lifecycle + OpenAPI (AC-006)"
+  tests/test_egress.py:
+    status: new
+    purpose: "Egress allowlist block + log (AC-008)"
+  tests/test_custody.py:
+    status: new
+    purpose: "storage_state custody: location, mode, absence from payloads (AC-009)"
+  tests/test_negative.py:
+    status: new
+    purpose: "Negative-space trust boundaries (AC-012)"
+  tests/test_resume.py:
+    status: new
+    purpose: "SIGKILL mid-job then resume, no duplicate write (AC-004)"
+  tests/test_classification.py:
+    status: new
+    purpose: "Induced drift + dead-session classification (AC-007)"
+  tests/test_fallback.py:
+    status: new
+    purpose: "Fallback seam recovery + zero-LLM invariant (AC-011)"
+  vault/research/computer-use-emr-sync/README.md:
+    status: modified
+    purpose: "HDP hub: taxonomy rows from observed failures + Stagehand evaluation findings (AC-010, AC-011)"
+  vault/research/computer-use-emr-sync/state.yaml:
+    status: modified
+    purpose: "HDP hub: findings/decision updates + open-question resolution (agent-cache replay)"
+phases:
+  bootstrap:
+    name: "Phase 1: Bootstrap"
+    type: config
+    goal: "Repo exists (user sign-off on creation), uv scaffold, CI green on empty skeleton, sandbox up with seeded synthetic patient"
+    needs: []
+    context:
+      requirements:
+        - FR-001
+        - FR-002
+      files:
+        - pyproject.toml
+        - LICENSE
+        - README.md
+        - .github/workflows/ci.yml
+        - .gitignore
+        - .env.example
+        - docker-compose.yml
+        - justfile
+        - tests/test_sandbox.py
+      skills: []
+  tracer:
+    name: "Phase 2: Deterministic thread"
+    type: tracer
+    goal: "login -> navigate -> read -> write -> verify, DBOS-checkpointed, audited, via CLI + thin API; zero LLM calls"
+    needs:
+      - bootstrap
+    context:
+      requirements:
+        - FR-003
+        - FR-004
+        - FR-005
+        - FR-006
+        - FR-008
+        - FR-009
+        - NFR-001
+        - NFR-002
+        - NFR-003
+      files:
+        - src/emr_sync_driver/models.py
+        - src/emr_sync_driver/browser.py
+        - src/emr_sync_driver/selectors.py
+        - src/emr_sync_driver/audit.py
+        - src/emr_sync_driver/workflows.py
+        - src/emr_sync_driver/cli.py
+        - src/emr_sync_driver/api.py
+        - tests/test_roundtrip.py
+        - tests/test_audit.py
+        - tests/test_api.py
+        - tests/test_egress.py
+        - tests/test_custody.py
+        - tests/test_negative.py
+      skills:
+        - "lang:python"
+  failure-injection:
+    name: "Phase 3: Failure injection + taxonomy"
+    type: verify
+    goal: "SIGKILL-resume proof, induced selector miss + dead session classified; >=3 hub taxonomy rows with hardening recs"
+    needs:
+      - tracer
+    context:
+      requirements:
+        - FR-004
+        - FR-007
+      files:
+        - src/emr_sync_driver/failures.py
+        - tests/test_resume.py
+        - tests/test_classification.py
+      skills:
+        - "lang:python"
+  fallback-eval:
+    name: "Phase 4: Stagehand BYOB fallback evaluation"
+    type: mvs
+    goal: "Drift-recovery behind the seam; deterministic path stays LLM-free; agent-cache replay question answered empirically"
+    needs:
+      - failure-injection
+    context:
+      requirements:
+        - FR-010
+      files:
+        - src/emr_sync_driver/fallback.py
+        - tests/test_fallback.py
+      skills:
+        - "lang:python"
+  hub-feedback:
+    name: "Phase 5: Hub + adapter-contract feedback"
+    type: docs
+    goal: "Taxonomy rows + fallback findings land in the HDP hub; adapter-contract implications noted for #11 seam"
+    needs:
+      - failure-injection
+      - fallback-eval
+    context:
+      requirements:
+        - FR-010
+      files:
+        - vault/research/computer-use-emr-sync/README.md
+        - vault/research/computer-use-emr-sync/state.yaml
+      skills: []
+  merge:
+    name: "Phase 6: Merge"
+    type: merge
+    goal: "Driver-repo PR(s) merged with CI green; NFR-004 hygiene grep clean"
+    needs:
+      - hub-feedback
+  close:
+    name: "Phase 7: Close"
+    type: close
+    goal: "AC verify + rollup; #18 exit-condition check; bead hdp-8qn update"
+    needs:
+      - merge

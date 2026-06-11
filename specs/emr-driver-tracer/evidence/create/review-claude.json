@@ -1,0 +1,9 @@
+{
+  "type": "review-claude",
+  "phase_id": "create",
+  "iterations": [
+    {
+      "score": 9.0
+    }
+  ]
+}

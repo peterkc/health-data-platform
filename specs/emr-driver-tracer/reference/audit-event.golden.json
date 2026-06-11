@@ -1,0 +1,11 @@
+{
+  "job_id": "frt-20260611-0001",
+  "step_id": "write-field:3",
+  "seq": 7,
+  "at": "2026-06-11T21:14:09.412000Z",
+  "action": "fill textarea[name='assessment_note']",
+  "locator": "textarea[name='assessment_note']",
+  "outcome": "ok",
+  "failure_class": null,
+  "idempotency_key": "frt-20260611-0001:write-field:3"
+}

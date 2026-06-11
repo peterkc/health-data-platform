@@ -1,0 +1,24 @@
+{
+  "schema_version": "agx-codex-provenance/v1",
+  "dispatched_at_utc": "2026-06-11T23:21:01Z",
+  "spec_name": "emr-driver-tracer",
+  "phase_id": "interview",
+  "role": "interview-challenger",
+  "worker_choice": "codex",
+  "model": "gpt-5.5",
+  "invocation_id": "b1f2423a-5110-45c3-b66a-d786bdbd5be4",
+  "outcome": "success",
+  "duration_ms": 38525,
+  "tokens": {
+    "input": 84667,
+    "cached_input": 57856,
+    "output": 1733,
+    "reasoning_output": 713
+  },
+  "schema_path": "/Volumes/agx/plugins/agx/skills/spec/schemas/interview-challenger.schema.json",
+  "schema_valid": true,
+  "retry_count": 0,
+  "raw_payload_paths": [
+    "/Volumes/health-data/vault/specs/emr-driver-tracer/evidence/interview/codex-interview-challenger-raw.json"
+  ]
+}

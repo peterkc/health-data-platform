@@ -1,0 +1,24 @@
+{
+  "schema_version": "agx-codex-provenance/v1",
+  "dispatched_at_utc": "2026-06-11T23:35:31Z",
+  "spec_name": "emr-driver-tracer",
+  "phase_id": "create",
+  "role": "reviewer",
+  "worker_choice": "codex",
+  "model": "gpt-5.5",
+  "invocation_id": "8f49e048-ce71-4a27-8a23-e7cf46f2dc5e",
+  "outcome": "success",
+  "duration_ms": 90016,
+  "tokens": {
+    "input": 247081,
+    "cached_input": 152576,
+    "output": 4118,
+    "reasoning_output": 1543
+  },
+  "schema_path": "/Volumes/agx/plugins/agx/skills/spec/schemas/reviewer.schema.json",
+  "schema_valid": true,
+  "retry_count": 0,
+  "raw_payload_paths": [
+    "/Volumes/health-data/vault/specs/emr-driver-tracer/evidence/create/codex-reviewer-raw.json"
+  ]
+}
