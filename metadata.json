@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "hdp_beads",
+  "project_id": "0afbab59-df04-4ac5-9970-4acbb971d001"
+}

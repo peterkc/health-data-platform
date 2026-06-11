@@ -1,0 +1,17 @@
+# Beads Configuration File
+# This file configures default behavior for all bd commands in this repository.
+
+# Storage backend (dolt is the only backend since v0.51.0)
+backend: dolt
+
+# Directory name is health-data but the project ID is hdp — set
+# explicitly so beads are hdp-N, not health-data-N.
+issue-prefix: "hdp"
+
+# Custom issue types so /agx:spec and /agx:research can tag beads
+types:
+  custom: "spec,research"
+
+# NOTE: sync.remote intentionally unset — issue state lives in the local
+# Dolt server, not in this branch.
+export.auto: false
