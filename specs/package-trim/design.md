@@ -9,6 +9,17 @@ surviving member's pyproject. Zero cross-package imports exist today (grep sweep
 2026-06-11), so no import-rewrite pass is needed beyond the moved packages' own
 `__init__` files.
 
+Test trees move with their packages. Every member carries
+`tests/test_smoke.py` + `tests/__init__.py`; a merge therefore relocates the
+merged member's test file into the survivor's `tests/` renamed
+`test_<submodule>_smoke.py` (`git mv`, same history rule), and the merged
+member's `tests/` dir — `__init__.py` included — is removed with the package.
+`hdp-core` gets a fresh `tests/__init__.py`; `hdp-api` and `hh-scribe` already
+have one. `hdp-hitl` is a whole-package move, not a merge, so its test rides
+along under its original basename (per-member `tests/` packages keep duplicate
+basenames importable under `--import-mode=importlib`, exactly as the 17-member
+tree does today).
+
 ```
 BEFORE (17)                          AFTER (8)
 -----------                          ---------
@@ -56,7 +67,18 @@ seam contract, target-map model, golden example, and AC-mapped test manifest see
   keeps the dependency surface auditable (today exactly httpx + one workspace
   dep). The `EmrSyncTransport` Protocol stub (`reference/emr_sync_transport.py`,
   landed as `hh_emr_sync.transport`) is the only interface code this spec adds —
-  it makes seam preservation verifiable (AC-005) rather than aspirational.
+  it makes seam preservation verifiable (AC-005) rather than aspirational. The
+  stub is the seam anchor, not the final adapter contract (see the async-push
+  decision below).
+- **`push` made async at birth (2026-06-11)** — the computer-use research hub
+  (vault/research/computer-use-emr-sync/) flags synchronous request/response as
+  disqualifying for the automation transport: a browser-driven write-back cannot
+  complete inside a blocking call. Zero implementations exist today, so the
+  signature change is free now and breaking later; `health()` stays sync (cheap
+  liveness probe). Idempotency is honored in the stub now
+  (`SyncResult.idempotency_key`); checkpoint/resume and
+  job-handle/async-completion semantics are deferred to epic #14's "define the
+  adapter contract" item — they need driver-run experience to design well.
 - **`hdp-outbox` merges into `hdp-core`, not `hh-emr-sync`** — the outbox is a
   data-layer persistence pattern (sqlmodel dep, same as audit/consent); the
   vertical consumes it, doesn't own it.

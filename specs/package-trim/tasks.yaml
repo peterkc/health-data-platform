@@ -3,49 +3,49 @@
 manifest:
   packages/hdp-core/:
     status: new
-    purpose: "Merged data-layer package; absorbs canonical, audit, identity, consent, provenance, outbox as submodules"
+    purpose: "Merged data-layer package; absorbs canonical, audit, identity, consent, provenance, outbox as submodules; their smoke tests land renamed in tests/ (new tests/__init__.py)"
   packages/hdp-canonical/:
     status: modified
-    purpose: "git mv src into packages/hdp-core/src/hdp_core/canonical; directory removed"
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/canonical; git mv tests/test_smoke.py to hdp-core/tests/test_canonical_smoke.py; directory (incl. tests/) removed"
   packages/hdp-audit/:
     status: modified
-    purpose: "git mv src into packages/hdp-core/src/hdp_core/audit; directory removed"
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/audit; git mv tests/test_smoke.py to hdp-core/tests/test_audit_smoke.py; directory (incl. tests/) removed"
   packages/hdp-identity/:
     status: modified
-    purpose: "git mv src into packages/hdp-core/src/hdp_core/identity; directory removed"
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/identity; git mv tests/test_smoke.py to hdp-core/tests/test_identity_smoke.py; directory (incl. tests/) removed"
   packages/hdp-consent/:
     status: modified
-    purpose: "git mv src into packages/hdp-core/src/hdp_core/consent; directory removed"
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/consent; git mv tests/test_smoke.py to hdp-core/tests/test_consent_smoke.py; directory (incl. tests/) removed"
   packages/hdp-provenance/:
     status: modified
-    purpose: "git mv src into packages/hdp-core/src/hdp_core/provenance; directory removed"
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/provenance; git mv tests/test_smoke.py to hdp-core/tests/test_provenance_smoke.py; directory (incl. tests/) removed"
   packages/hdp-outbox/:
     status: modified
-    purpose: "git mv src into packages/hdp-core/src/hdp_core/outbox; directory removed"
+    purpose: "git mv src into packages/hdp-core/src/hdp_core/outbox; git mv tests/test_smoke.py to hdp-core/tests/test_outbox_smoke.py; directory (incl. tests/) removed"
   packages/hdp-ingest/:
     status: modified
-    purpose: "git mv src into packages/hdp-api/src/hdp_api/ingest; directory removed"
+    purpose: "git mv src into packages/hdp-api/src/hdp_api/ingest; git mv tests/test_smoke.py to hdp-api/tests/test_ingest_smoke.py; directory (incl. tests/) removed"
   packages/hdp-api/:
     status: modified
-    purpose: "Absorbs hdp-ingest as hdp_api.ingest; deps gain pydantic; truthful Depth marker"
+    purpose: "Absorbs hdp-ingest as hdp_api.ingest plus its renamed smoke test; deps gain pydantic; truthful Depth marker"
   packages/hdp-hitl/:
     status: new
-    purpose: "hh-hitl promoted per hdp-schema-seed FR-102; deps remap to hdp-core"
+    purpose: "hh-hitl promoted per hdp-schema-seed FR-102; deps remap to hdp-core; tests/ rides the move unchanged (whole-package move, not a merge — no packages/hdp-hitl exists to collide with)"
   verticals/home-health/hh-hitl/:
     status: modified
-    purpose: "git mv to packages/hdp-hitl; directory removed"
+    purpose: "git mv to packages/hdp-hitl (src and tests together); directory removed"
   verticals/home-health/hh-oasis/:
     status: modified
-    purpose: "git mv src into hh-scribe/src/hh_scribe/oasis; directory removed"
+    purpose: "git mv src into hh-scribe/src/hh_scribe/oasis; git mv tests/test_smoke.py to hh-scribe/tests/test_oasis_smoke.py; directory (incl. tests/) removed"
   verticals/home-health/hh-skills/:
     status: modified
-    purpose: "git mv src into hh-scribe/src/hh_scribe/skills; directory removed"
+    purpose: "git mv src into hh-scribe/src/hh_scribe/skills; git mv tests/test_smoke.py to hh-scribe/tests/test_skills_smoke.py; directory (incl. tests/) removed"
   verticals/home-health/hh-mcp/:
     status: modified
-    purpose: "git mv src into hh-scribe/src/hh_scribe/mcp; directory removed"
+    purpose: "git mv src into hh-scribe/src/hh_scribe/mcp; git mv tests/test_smoke.py to hh-scribe/tests/test_mcp_smoke.py; directory (incl. tests/) removed"
   verticals/home-health/hh-scribe/:
     status: modified
-    purpose: "Absorbs oasis, skills, mcp; deps gain mcp + hdp-api; deps remap to hdp-core"
+    purpose: "Absorbs oasis, skills, mcp plus their renamed smoke tests; deps gain mcp + hdp-api; deps remap to hdp-core"
   verticals/home-health/hh-emr-sync/:
     status: modified
     purpose: "Deps remap hdp-outbox to hdp-core; gains src/hh_emr_sync/transport.py Protocol stub (seam contract)"
@@ -67,11 +67,14 @@ manifest:
   CLAUDE.md:
     status: modified
     purpose: "Project Structure section reflects 8-member map"
+  packages/hdp-observability/README.md:
+    status: modified
+    purpose: "Depth marker normalized to the canonical `**Depth**: MIN` form the other members use (format only; the earned depth level is unchanged)"
 phases:
   structural:
     name: "Phase 1: Tracer — full member-map rewrite"
     type: tracer
-    goal: "17 members become 8 via history-preserving git mv; workspace syncs, imports prove concept survival, test collection is collision-free."
+    goal: "17 members become 8 via history-preserving git mv; each merged member's smoke test is relocated-and-renamed into the survivor's tests/ tree (NFR-004); workspace syncs, imports prove concept survival, test collection is collision-free, transport module is httpx-free."
     shared_fate: "uv workspace cannot sync with dangling member references — removing hdp-canonical while hh-oasis still depends on it breaks every downstream command. Partial maps are not keepable intermediates; the member-map rewrite lands together or not at all. The seam Protocol stub rides along because hh-emr-sync's pyproject is rewritten here exactly once."
     needs: []
     context:
@@ -110,7 +113,7 @@ phases:
         - uv.lock
       skills: []
     validation:
-      command: "uv sync && uv run python -c 'import hdp_core.canonical, hdp_core.audit, hdp_core.identity, hdp_core.consent, hdp_core.provenance, hdp_core.outbox, hdp_api.ingest, hdp_hitl, hh_scribe.oasis, hh_scribe.skills, hh_scribe.mcp, hh_emr_sync.transport' && uv run pytest -q --co >/dev/null && test \"$(ls -d packages/*/ verticals/home-health/*/ apps/*/ | wc -l | tr -d ' ')\" = '8'"
+      command: "uv sync && uv run python -c 'import hdp_core.canonical, hdp_core.audit, hdp_core.identity, hdp_core.consent, hdp_core.provenance, hdp_core.outbox, hdp_api.ingest, hdp_hitl, hh_scribe.oasis, hh_scribe.skills, hh_scribe.mcp, hh_emr_sync.transport' && ! grep -Eq '^[[:space:]]*(import|from)[[:space:]]+httpx' verticals/home-health/hh-emr-sync/src/hh_emr_sync/transport.py && uv run pytest -q --co >/dev/null && test \"$(ls -d packages/*/ verticals/home-health/*/ apps/*/ | wc -l | tr -d ' ')\" = '8'"
   config:
     name: "Phase 2: Config — commitlint scope realignment"
     type: config
@@ -129,19 +132,21 @@ phases:
   docs:
     name: "Phase 3: Docs — architecture text"
     type: docs
-    goal: "README + CLAUDE.md describe the 8-member map; settled positioning language intact."
+    goal: "README + CLAUDE.md describe the 8-member map; settled positioning language intact; hdp-observability's Depth marker normalized to the canonical form (level stays MIN — format only)."
     needs:
       - structural
     context:
       design: "## Architecture"
       requirements:
         - FR-008
+        - FR-009
       files:
         - README.md
         - CLAUDE.md
+        - packages/hdp-observability/README.md
       skills: []
     validation:
-      command: "grep -q 'hdp-core' README.md && grep -q 'hdp-core' CLAUDE.md && ! grep -E 'hdp-canonical|hdp-provenance|hh-oasis' README.md CLAUDE.md"
+      command: "grep -q 'hdp-core' README.md && grep -q 'hdp-core' CLAUDE.md && ! grep -E 'hdp-canonical|hdp-provenance|hh-oasis' README.md CLAUDE.md && grep -qF '**Depth**: MIN' packages/hdp-observability/README.md"
   verify:
     name: "Phase 4: Verify — full acceptance sweep"
     type: verify
@@ -162,7 +167,7 @@ phases:
       files: []
       skills: []
     validation:
-      command: "just verify && uv run python vault/specs/package-trim/reference/check_layering.py && uv run python vault/specs/package-trim/reference/check_depth_markers.py && uv run python vault/specs/package-trim/reference/check_dep_union.py && git log --follow --oneline -- packages/hdp-hitl/src/hdp_hitl/__init__.py | grep -c . | awk '{exit !($1>=1)}'"
+      command: "just verify && uv run python vault/specs/package-trim/reference/check_layering.py && uv run python vault/specs/package-trim/reference/check_depth_markers.py && uv run python vault/specs/package-trim/reference/check_dep_union.py && for f in packages/hdp-hitl/src/hdp_hitl/__init__.py packages/hdp-core/src/hdp_core/audit/__init__.py packages/hdp-api/src/hdp_api/ingest/__init__.py verticals/home-health/hh-scribe/src/hh_scribe/oasis/__init__.py; do git log --follow --oneline -- \"$f\" | grep -c . | awk '{exit !($1>=2)}' || exit 1; done"
   merge:
     name: "Phase 5: Merge — PR to main"
     type: merge

@@ -17,7 +17,8 @@
 - FR-006: `hh-emr-sync` SHALL expose an `EmrSyncTransport` Protocol
   (`hh_emr_sync.transport`) whose signatures reference no transport-specific types
   (no `httpx` imports in the protocol module), keeping the seam transport-agnostic
-  for #14/#18.
+  for #14/#18. `push` is `async def` (rationale in design.md § Decisions);
+  `health` stays sync.
 - FR-007: WHEN members change, `.commitlintrc.yaml` `scope-enum` SHALL exactly equal
   the static scopes (workspace, packages, verticals, apps, docs, ci, deps, infra,
   vault, adr, spec, research) plus the 8 post-trim member names, and every
@@ -26,8 +27,9 @@
   map and SHALL preserve the settled positioning language (AI-native workflow +
   governance layer; Medplum named complementary).
 - FR-009: every remaining member README SHALL carry a Depth marker truthful to its
-  contents (SKEL for interface-only shells; `hdp-observability` keeps its earned
-  depth).
+  contents and in the canonical `**Depth**: <LEVEL>` form (SKEL for interface-only
+  shells; `hdp-observability` keeps its earned depth — its marker is normalized
+  to the canonical form the other members use, format only, level unchanged).
 
 ## Non-functional
 
@@ -39,7 +41,13 @@
 - NFR-003: layering SHALL hold — no `packages/*` member depends on a vertical or
   app; no vertical depends on an app (pyproject dependency scan).
 - NFR-004: merged `tests/` trees SHALL keep unique test-file basenames so pytest
-  `--import-mode=importlib` collection stays collision-free.
+  `--import-mode=importlib` collection stays collision-free — each merged
+  member's `tests/test_smoke.py` is relocated-and-renamed via `git mv` into the
+  surviving member's `tests/` as `test_<submodule>_smoke.py` (e.g.
+  `packages/hdp-audit/tests/test_smoke.py` →
+  `packages/hdp-core/tests/test_audit_smoke.py`), and the merged member's
+  `tests/` dir goes away with its package. `hdp-hitl` is a whole-package move,
+  not a merge: its test basename survives unchanged.
 
 (The template's negative-space trust-boundary NFR is deleted: this spec is a
 structural refactor introducing no input-accepting surface; malformed workspace
@@ -52,17 +60,23 @@ states fail fast inside `uv` itself. Rationale in design.md § Decisions.)
 - AC-002: `just verify` (ruff + pytest, CI mirror) exits 0.
 - AC-003: `reference/check_layering.py` exits 0 — zero layering violations across
   all member pyprojects.
-- AC-004: `uv run python -c "import hdp_hitl"` exits 0 AND
-  `git log --follow --oneline -- packages/hdp-hitl/src/hdp_hitl/__init__.py`
-  lists the pre-move (hh-hitl) commits.
+- AC-004: `uv run python -c "import hdp_hitl"` exits 0 AND `git log --follow
+  --oneline` reaches pre-move commits for at least one moved file per surviving
+  merge target — `packages/hdp-hitl` (hh-hitl promotion), `packages/hdp-core`
+  (an absorbed primitive), `packages/hdp-api` (ingest), and
+  `verticals/home-health/hh-scribe` (an absorbed vertical member).
 - AC-005: `uv run python -c "from hh_emr_sync.transport import EmrSyncTransport"`
-  exits 0 AND the protocol module contains no `httpx` import.
+  exits 0 AND `! grep -Eq '^[[:space:]]*(import|from)[[:space:]]+httpx'` against
+  the transport module source exits 0 (no `httpx` import statement — the module
+  prose may name httpx as the thing it excludes; both halves gate the
+  structural phase).
 - AC-006: `reference/check_commitlint.py` exits 0 — scope-enum equals the expected
   set and every x-scope-patterns glob resolves.
 - AC-007: README.md and CLAUDE.md mention `hdp-core` and contain no removed member
   names in architecture text; README retains the positioning sentence.
 - AC-008: `reference/check_depth_markers.py` exits 0 — every member README has a
-  Depth line and no interface-only member claims MIN/DEEP/COMPOSED.
+  canonical `**Depth**:` line and no interface-only member claims
+  MIN/DEEP/COMPOSED.
 - AC-009: `uv run python -c "import hdp_core.canonical, hdp_core.audit,
   hdp_core.identity, hdp_core.consent, hdp_core.provenance, hdp_core.outbox,
   hdp_api.ingest, hh_scribe.oasis, hh_scribe.skills, hh_scribe.mcp"` exits 0

@@ -20,13 +20,13 @@ def test_layering_invariant_holds():
 
 
 # --- AC-004
-def test_hdp_hitl_promoted_with_history():
-    pytest.skip("structural phase: import hdp_hitl; git log --follow reaches hh-hitl commits")
+def test_history_preserved_per_merge_target():
+    pytest.skip("verify phase: git log --follow reaches pre-move commits for one moved file per merge target (hdp-hitl, hdp-core, hdp-api, hh-scribe)")
 
 
 # --- AC-005
 def test_emr_sync_transport_seam_is_transport_agnostic():
-    pytest.skip("structural phase: EmrSyncTransport imports; no httpx in protocol module")
+    pytest.skip("structural phase: EmrSyncTransport imports; grep gate asserts no httpx in protocol module")
 
 
 # --- AC-006

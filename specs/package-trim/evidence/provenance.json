@@ -13,6 +13,19 @@
       "needs_clarification_count": 0,
       "interview": "self-answered from orchestrator session context; codex interview-challenger findings (LOC figure, Protocol-stub scope, source quoting) applied",
       "coverage_c7_c8": "PASS"
+    },
+    {
+      "timestamp": "2026-06-11T19:55:00Z",
+      "and_gate": {
+        "codex": "approve (re-review of amended spec, confidence 0.95, zero findings)",
+        "claude": "approve-with-amendments (fresh-context Opus reviewer, confidence 0.82; 6 findings adjudicated by orchestrator, all applied)",
+        "status": "pass",
+        "reason": "amendments: test-tree merge procedure (blocker), check_commitlint full-glob extraction, AC-005 no-httpx enforcement, depth-marker normalization, async push seam (checkpoint/resume deferred to #14), AC-004 history-preservation generalized"
+      },
+      "clarify_rounds": 0,
+      "needs_clarification_count": 0,
+      "interview": "n/a (amendment iteration)",
+      "coverage_c7_c8": "PASS (unchanged)"
     }
   ]
 }

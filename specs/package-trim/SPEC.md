@@ -27,8 +27,14 @@ before #12 lands real code.
   flat namespace rejected.
 - Commitlint deadlock avoided by phase ordering (scope change after structural;
   see design.md § Decisions).
-- pytest `--import-mode=importlib` requires unique test basenames post-merge
-  (NFR-004; AC-010 verifies).
+- pytest `--import-mode=importlib` requires unique test basenames post-merge —
+  every merged member's `tests/test_smoke.py` is relocated-and-renamed
+  (`test_<submodule>_smoke.py`) into the survivor's `tests/` tree (NFR-004;
+  AC-010 verifies).
+- `.commitlintrc.yaml` globs `Dockerfile*` and `docs/**` resolve to nothing in
+  the current tree; `check_commitlint.py` now validates every x-scope-patterns
+  glob (inline mappings and list items, not just bare list entries), so the
+  config phase must drop or satisfy those entries.
 - `uv.lock` staleness across member removal: verify phase regenerates the lock;
   unknown whether `uv lock` needs `--upgrade` after member deletion — resolved at
   structural-phase run.
