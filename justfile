@@ -33,8 +33,8 @@ observability-down:
 
 # --- Database ----------------------------------------------------------------
 
-# Apply DB migrations. Real implementation lands once hdp-canonical / hdp-audit
-# schemas exist; this stub keeps the command surface stable.
+# Apply DB migrations. Real implementation lands once the hdp-core schemas
+# (canonical, audit) exist; this stub keeps the command surface stable.
 db-migrate:
     @echo "db-migrate: stub — migrations will be wired up once schemas land."
 
