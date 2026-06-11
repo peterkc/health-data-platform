@@ -31,8 +31,8 @@ class EmrSyncTransport(Protocol):
 
     async def push(self, record_id: str, payload: dict, idempotency_key: str) -> SyncResult:
         """Write one record to the EMR; MUST be idempotent on idempotency_key."""
-        raise NotImplementedError
+        ...
 
     def health(self) -> bool:
         """Cheap liveness probe for the transport's session/connection."""
-        raise NotImplementedError
+        ...

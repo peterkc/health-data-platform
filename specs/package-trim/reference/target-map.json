@@ -46,7 +46,7 @@
       "name": "hh-emr-sync",
       "layer": "verticals/home-health",
       "absorbs": [],
-      "deps": ["httpx>=0.28", "hdp-core"],
+      "deps": ["hdp-core"],
       "depth": "SKEL"
     },
     {
