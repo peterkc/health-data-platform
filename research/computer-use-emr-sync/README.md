@@ -13,7 +13,6 @@ direction: exploring
 tags: [computer-use, emr-sync, security, sandbox, home-health]
 related: []
 ---
-<!-- Full frontmatter schema: ../../adr/resources/vault-frontmatter-schema.md §Research -->
 
 # Computer-use as an EMR sync transport
 

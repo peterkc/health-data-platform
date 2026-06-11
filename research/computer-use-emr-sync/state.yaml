@@ -76,7 +76,7 @@ findings:
 decisions:
   - section: Security posture
     proposed_by: ai
-    revised_by: none
+    revised_by: "user (ratified 2026-06-11, main session)"
     rationale: >
       Structural-over-behavioral framing: synthetic-only scope, isolation,
       allowlist, credentials outside the model loop — each eliminates a
@@ -86,7 +86,7 @@ decisions:
         reason_rejected: "Docs themselves flag login-in-prompt as increased prompt-injection risk; DOM-first login avoids it structurally"
   - section: Sandbox selection
     proposed_by: ai
-    revised_by: none
+    revised_by: "user (ratified 2026-06-11, main session)"
     rationale: >
       Failure-taxonomy work needs multi-day owned state; public demo wipes
       daily, is shared, and has no AUP authorizing sustained automation.
@@ -95,7 +95,7 @@ decisions:
         reason_rejected: "Daily 8:00 UTC wipe destroys taxonomy state; shared tenancy confounds observations; sustained automated traffic against community infra without an AUP is not defensible"
   - section: DOM-first, vision-assist
     proposed_by: ai
-    revised_by: none
+    revised_by: "user (ratified 2026-06-11, main session)"
     rationale: >
       Vendor limitation list (latency, coordinate hallucination, scroll
       unreliability, niche-app degradation) argues against vision as the
@@ -105,7 +105,7 @@ decisions:
         reason_rejected: "Slower, costlier, hallucination-prone per vendor docs; reserved for canvas/legacy widgets and selector-drift recovery"
   - section: Failure taxonomy (seed)
     proposed_by: ai
-    revised_by: none
+    revised_by: "user (ratified 2026-06-11, main session)"
     rationale: >
       Empirical rows cannot be pre-derived; the table fixes the column
       structure (detection, blast radius, hardening) so spike runs have a
