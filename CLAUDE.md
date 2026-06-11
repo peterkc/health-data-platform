@@ -11,6 +11,23 @@ Python-first multi-vertical health data platform. Three layers:
 3. **Apps** (`apps/*`) — composed deployables. Currently:
    `apps/home-health-scribe` wires a home-health deployment.
 
+## Guiding Principles
+
+`vault/adr/0001-guiding-principles.md` (vault branch — public). Five
+principles, three concentric rings; inner ring wins conflicts:
+
+> **Provenance. Judgment. Consent. Resilience. Leverage.**
+
+P1–P3 (inner: AI output is a proposal, not a record; AI drafts, humans
+sign; data moves only with permission) constrain P4 (the failing step is
+the normal path) constrain P5 (be the layer, not the silo; complexity must
+be earned). Before designing a feature, ask: traceable to source (P1)?
+human gate structural (P2)? what permission moves this data (P3)? safe to
+re-run when it fails halfway (P4)? does the ecosystem already provide it
+(P5)? New ADRs name the principles they serve in Decision Drivers. The
+same constitution governs engineering agents: verify before asserting,
+adjudicate generated output, delete unearned structure.
+
 ## Stack
 
 Python >=3.13, uv workspace (16 members), FastAPI, SQLModel, Postgres 18,
