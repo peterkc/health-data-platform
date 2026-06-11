@@ -64,11 +64,23 @@ lint:
 fmt:
     uv run ruff format .
 
-# Full verification gate: lint + tests.
-verify: lint test
+# Static type-check shipped source (src dirs only; tests excluded).
+typecheck:
+    uv run mypy packages/*/src verticals/home-health/*/src apps/*/src
+
+# Tests with coverage (term-missing locally, xml for CI upload).
+cov:
+    uv run pytest --cov --cov-report=term-missing --cov-report=xml
+
+# Audit resolved dependencies for known CVEs (skips first-party packages).
+audit:
+    uv run --with pip-audit pip-audit --skip-editable
+
+# Full verification gate: lint + type-check + tests.
+verify: lint typecheck test
 
 # Mirror GitHub Actions locally.
-ci: lint test
+ci: lint typecheck test
 
 # Install git hooks (run once after cloning).
 install-hooks:

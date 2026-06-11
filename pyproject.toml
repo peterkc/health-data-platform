@@ -15,6 +15,7 @@ dev = [
     "ruff>=0.9.0",
     "pytest>=8.3.0",
     "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
     "mypy>=1.13.0",
 ]
 
@@ -59,12 +60,14 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
-# Keep the scaffolding rule set pragmatic: pycodestyle, pyflakes, isort, bugbear, pyupgrade.
-select = ["E", "F", "I", "B", "UP", "W"]
+# pycodestyle, pyflakes, isort, bugbear, pyupgrade, plus security (flake8-bandit)
+# and async-correctness (flake8-async) — bandit-equivalent SAST without a separate tool.
+select = ["E", "F", "I", "B", "UP", "W", "S", "ASYNC"]
 ignore = []
 
 [tool.ruff.lint.per-file-ignores]
-"**/tests/**" = ["B011"]
+# Tests legitimately use bare asserts (S101) and assert-False (B011).
+"**/tests/**" = ["B011", "S101"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -89,3 +92,25 @@ addopts = [
 python_version = "3.13"
 strict = false
 ignore_missing_imports = true
+# src-layout workspace: each packages/*/src and verticals/*/src is a package base,
+# so hdp_api / hh_oasis / ... resolve as top-level modules without tests/ collisions.
+explicit_package_bases = true
+namespace_packages = true
+
+[tool.coverage.run]
+branch = true
+source_pkgs = [
+    "hdp_canonical", "hdp_audit", "hdp_identity", "hdp_consent",
+    "hdp_provenance", "hdp_ingest", "hdp_api", "hdp_agent",
+    "hdp_outbox", "hdp_observability",
+    "hh_oasis", "hh_scribe", "hh_hitl", "hh_emr_sync", "hh_mcp", "hh_skills",
+    "home_health_scribe",
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]
