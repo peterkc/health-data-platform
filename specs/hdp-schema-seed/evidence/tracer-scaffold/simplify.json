@@ -1,0 +1,11 @@
+{
+  "type": "simplify",
+  "phase_id": "tracer-scaffold",
+  "iterations": [
+    {
+      "skipped": true,
+      "reason": "no_source_files",
+      "explanation": "Phase 1 staged source-file candidates after FR-010 exclusions are: src/hdp_hitl/__init__.py (3 lines, pure git rename, content unchanged), src/hdp_hitl/py.typed (marker, 0 bytes), tests/__init__.py (0 bytes), uv.lock (generated lockfile). No meaningful implementation source code to simplify."
+    }
+  ]
+}

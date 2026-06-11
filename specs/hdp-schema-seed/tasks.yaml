@@ -1,0 +1,209 @@
+# hdp-schema-seed — Postgres 18 + pgvector + initial DDL + HITL state machine + seed
+phases:
+  tracer-scaffold:
+    name: "Phase 1: Tracer — precursor resolution + pgvector image swap + PG 18 primitives"
+    type: tracer
+    goal: "Environment ready for DDL. Precursors (FR-101..FR-104) resolve, postgres image swaps to pgvector/pgvector:pg18, psql confirms uuidv7() + four extensions."
+    shared_fate: "Phase 2 depends on a boot-ready stack with PG 18 primitives AND research docs pinned by FR-101..FR-104. A partial success (e.g. 3/4 precursors done, or image swap without uuidv7) is not a keepable intermediate — Phase 2 cannot author SQL that depends on missing primitives or missing table-design research. Tasks land together or not at all."
+    context:
+      design: "## Component Design"
+      requirements:
+        - FR-101
+        - FR-102
+        - FR-103
+        - FR-104
+        - FR-001
+        - FR-002
+        - NFR-001
+        - NFR-002
+        - NFR-003
+      files:
+        - vault/research/table-designs.md
+        - vault/research/hdp-initial-tables.md
+        - vault/research/test-fixture-decision.md
+        - packages/hdp-hitl/
+        - pyproject.toml
+        - docker-compose.yml
+        - justfile
+    validation:
+      command: "test -f vault/research/table-designs.md && test -d .worktrees/hdp-schema-seed/packages/hdp-hitl && test -f vault/research/hdp-initial-tables.md && test -f vault/research/test-fixture-decision.md && just up && sleep 20 && docker compose ps | grep -cE '(healthy|Up)' | grep -q 3 && (psql postgresql://hdp:hdp@localhost:5437/hdp -At -c 'SELECT uuidv7() IS NOT NULL' 2>/dev/null || docker exec hdp-postgres psql -U hdp -d hdp -At -c 'SELECT uuidv7() IS NOT NULL') | grep -q '^t$' && (psql postgresql://hdp:hdp@localhost:5437/hdp -At -c \"SELECT COUNT(*) FROM pg_extension WHERE extname IN ('uuid-ossp','vector','pg_trgm','btree_gin')\" 2>/dev/null || docker exec hdp-postgres psql -U hdp -d hdp -At -c \"SELECT COUNT(*) FROM pg_extension WHERE extname IN ('uuid-ossp','vector','pg_trgm','btree_gin')\") | grep -q '^4$'"
+    tasks:
+      migrate-mvp-schema:
+        name: "Copy 19 near-raw + 5 sanitized files from prior internal schema research to vault/research/; replace legacy audit_batch_id namespace with hdp in database-substrate.md; strip non-technical framing from platform-malleability.md, scenarios.md, decision-log.md, adr-alignment.md (FR-101)"
+      promote-hh-hitl-to-platform:
+        name: "Rename verticals/home-health/hh-hitl/ -> packages/hdp-hitl/; update pyproject.toml workspace tool.uv.sources (remove hh-hitl; add hdp-hitl); update apps/home-health-scribe/pyproject.toml dependencies (replace `hh-hitl` with `hdp-hitl`); update imports across the workspace; run uv sync + uv run pytest -q --co to confirm nothing broke (FR-102)"
+        needs: migrate-mvp-schema
+      pick-table-subset:
+        name: "Decide HDP-initial table subset; write vault/research/hdp-initial-tables.md listing exact table names + source file for each + FK dependency order; target count becomes SC-004 N (recommended ~25: canonical + identity + operational + HITL + OASIS) (FR-103)"
+        needs: migrate-mvp-schema
+      choose-db-test-fixture:
+        name: "Decide DB test fixture approach (shared docker stack / pytest-postgresql / Testcontainers); record choice in vault/research/test-fixture-decision.md; recommended default: shared docker stack matching the compose-defined postgres service (FR-104)"
+        needs: promote-hh-hitl-to-platform
+      swap-postgres-image:
+        name: "Edit docker-compose.yml: postgres image from postgres:18-alpine to pgvector/pgvector:pg18"
+        needs:
+          - migrate-mvp-schema
+          - promote-hh-hitl-to-platform
+          - pick-table-subset
+          - choose-db-test-fixture
+      verify-tracer:
+        name: "Run just up; sleep 20; docker compose ps shows 3 healthy; psql confirms uuidv7() available and all 4 extensions loaded; FR-001/002 met. Precursors FR-101 through FR-104 satisfied. HTTP /health is deferred to Phase 2 (mvs-ddl) where Alembic state is queryable."
+        needs:
+          - swap-postgres-image
+
+  mvs-ddl:
+    name: "Phase 2: MVS — Static DDL extraction + Alembic + HITL state machine + OASIS catalog"
+    type: mvs
+    goal: "Schema applied. Alembic executes the sorted sql/*.sql set across three package trees; /health reports post-DDL state; sql-discovery test green."
+    shared_fate: "A partial schema state (half-applied migration, or tables present without the /health endpoint teaching callers about them) leaves the DB in a configuration Phase 3 seeding cannot trust. SQL extraction, Alembic wiring, /health extension, and the discovery-guard test share one rollback boundary — `just db-reset && just db-ddl` from scratch — so shipping them as one phase matches how they will be rolled back in practice."
+    needs:
+      - tracer-scaffold
+    context:
+      design: "## Component Design"
+      requirements:
+        - FR-003
+        - FR-004
+        - FR-005
+        - FR-006
+        - FR-011
+        - FR-012
+        - FR-013
+        - NFR-002
+        - NFR-003
+      files:
+        - packages/hdp-canonical/sql/00-extensions.sql
+        - packages/hdp-canonical/sql/01-functions.sql
+        - packages/hdp-canonical/sql/10-reference.sql
+        - packages/hdp-canonical/sql/20-identity.sql
+        - packages/hdp-canonical/sql/30-silver.sql
+        - packages/hdp-canonical/sql/40-operational.sql
+        - packages/hdp-canonical/sql/99-triggers.sql
+        - packages/hdp-hitl/sql/50-hitl.sql
+        - verticals/home-health/hh-oasis/sql/60-oasis.sql
+        - migrations/alembic.ini
+        - migrations/env.py
+        - migrations/script.py.mako
+        - migrations/versions/001_initial_hdp_ddl.py
+        - pyproject.toml
+        - justfile
+        - apps/home-health-scribe/src/home_health_scribe/main.py
+        - apps/home-health-scribe/pyproject.toml
+        - packages/hdp-canonical/tests/test_sql_discovery.py
+    validation:
+      command: "just db-ddl && just db-ddl && psql postgresql://hdp:hdp@localhost:5437/hdp -t -c \"SELECT version_num FROM alembic_version\" | grep -q '001_initial_hdp_ddl' && ! grep -rq 'CREATE TABLE' migrations/ scripts/ && just dev & sleep 15 && curl -sf localhost:8000/health | jq -e '.alembic_version==\"001_initial_hdp_ddl\" and .tables_count>0'"
+    tasks:
+      extract-extensions:
+        name: "Extract 4 CREATE EXTENSION statements to packages/hdp-canonical/sql/00-extensions.sql"
+      extract-functions:
+        name: "Extract touch_updated_at() + audit trigger function to packages/hdp-canonical/sql/01-functions.sql"
+        needs: extract-extensions
+      extract-reference-tables:
+        name: "Extract reference tables (ref_hom_nodes, ref_source_adapters, ref_organizations, ref_analyte_conversions, ref_record_type_schemas, ref_drug_classes, loinc_crosswalk) to packages/hdp-canonical/sql/10-reference.sql"
+        needs: extract-functions
+      extract-identity-tables:
+        name: "Extract persons, patients, person_identifiers, patient_org_access to packages/hdp-canonical/sql/20-identity.sql"
+        needs: extract-reference-tables
+      extract-silver-tables:
+        name: "Extract observations, conditions, medications, allergies, immunizations, family_history, procedures, orders to packages/hdp-canonical/sql/30-silver.sql"
+        needs: extract-identity-tables
+      extract-operational-tables:
+        name: "Extract provenance, raw_payloads, documents, audit_batches, audit_changes, policy_rules, access_grants, access_log, source_connections to packages/hdp-canonical/sql/40-operational.sql; audit_changes.batch_id NULLable"
+        needs: extract-silver-tables
+      author-hitl-sql:
+        name: "Author packages/hdp-hitl/sql/50-hitl.sql: chart_items + chart_state_transitions + transition-log trigger + Convention-#9 finalize-gate trigger (see Decision 7)"
+        needs: extract-operational-tables
+      author-oasis-sql:
+        name: "Author verticals/home-health/hh-oasis/sql/60-oasis.sql: oasis_items catalog + episodes + visits"
+        needs: author-hitl-sql
+      extract-triggers:
+        name: "Extract CREATE TRIGGER trg_*_updated_at per applicable table + audit trigger on policy_rules to packages/hdp-canonical/sql/99-triggers.sql"
+        needs: author-oasis-sql
+      add-alembic-deps:
+        name: "Add sqlalchemy>=2.0, alembic>=1.13, psycopg[binary] to pyproject.toml dev group (or to hdp-canonical package deps)"
+      write-alembic-config:
+        name: "Write migrations/alembic.ini (script_location=migrations; sqlalchemy.url default, overridden by env var DATABASE_URL)"
+        needs: add-alembic-deps
+      write-alembic-env:
+        name: "Write migrations/env.py with DATABASE_URL override, target_metadata=None (SQLAlchemy models arrive later), embedded warning comment on autogenerate footgun"
+        needs: write-alembic-config
+      write-alembic-template:
+        name: "Write migrations/script.py.mako (Alembic default revision template)"
+        needs: write-alembic-env
+      write-initial-migration:
+        name: "Write migrations/versions/001_initial_hdp_ddl.py: upgrade() walks packages/hdp-canonical/sql/, packages/hdp-hitl/sql/, verticals/home-health/hh-oasis/sql/, sorts all sql/*.sql by basename, calls op.execute() on each; downgrade() raises NotImplementedError; no CREATE TABLE text outside sql/ (NFR-002)"
+        needs:
+          - extract-triggers
+          - write-alembic-template
+      add-justfile-db-recipes:
+        name: "Replace db-migrate stub with db-ddl (alembic upgrade head), add db-migration-status, db-reset recipes; keep seed stub for Phase 3"
+        needs: write-initial-migration
+      add-psycopg-dep:
+        name: "Add psycopg[binary] to apps/home-health-scribe/pyproject.toml runtime deps"
+      author-health-endpoint:
+        name: "Author apps/home-health-scribe/src/home_health_scribe/main.py: create FastAPI app instance + GET /health route. /health queries postgres version + uuidv7 + tables_count + alembic_version + hom_nodes_seeded; handle UndefinedTable with rollback + null field; initialize structlog for trace output. main.py does not yet exist on main — this task creates it."
+        needs: add-psycopg-dep
+      add-sql-discovery-test:
+        name: "Add packages/hdp-canonical/tests/test_sql_discovery.py: assert all three expected SQL dirs exist, contain at least one .sql file, and filenames follow the numeric-prefix convention (NN-name.sql). Prevents silent migration breakage if a package is renamed/moved."
+        needs: write-initial-migration
+      verify-mvs:
+        name: "Run just db-ddl twice; alembic_version.version_num stable at 001_initial_hdp_ddl (AC-012, AC-013); dt count matches vault/research/hdp-initial-tables.md; pg_trigger updated_at count matches sql/ content; grep CREATE TABLE migrations/ scripts/ returns 0 (NFR-002); curl /health returns the post-DDL JSON with alembic_version=001_initial_hdp_ddl and hom_nodes_seeded=0"
+        needs:
+          - write-initial-migration
+          - add-justfile-db-recipes
+          - author-health-endpoint
+          - add-sql-discovery-test
+
+  verify-seed:
+    name: "Phase 3: Verify — Seed reference tables + test patient + HITL transitions + idempotency"
+    type: verify
+    goal: "DB ready for downstream consumers. Seed populates reference tables + test patient; audit + transition triggers fire; Convention-#9 finalize-gate enforced; second run is a no-op."
+    shared_fate: "Every outcome in this phase is a property of the same post-seed database state. Downstream consumers (hh-scribe, hdp-agent) cannot distinguish 'seeds ran but transition trigger is missing' from 'seeds and triggers are both broken' — both fail the AC-016, AC-018, AC-019 verification suite together. Idempotency, audit attribution, and HITL gate behavior all share one rollback boundary: `just db-reset && just db-ddl && just seed`."
+    needs:
+      - mvs-ddl
+    context:
+      design: "## Component Design"
+      requirements:
+        - FR-007
+        - FR-008
+        - FR-009
+        - FR-010
+        - FR-012
+        - FR-013
+      files:
+        - scripts/seed.py
+        - justfile
+        - packages/hdp-hitl/tests/test_finalize_gate.py
+    validation:
+      command: "just seed && COUNT1=$(psql postgresql://hdp:hdp@localhost:5437/hdp -t -c 'SELECT COUNT(*) FROM ref_hom_nodes') && just seed && COUNT2=$(psql postgresql://hdp:hdp@localhost:5437/hdp -t -c 'SELECT COUNT(*) FROM ref_hom_nodes') && [ \"$COUNT1\" = \"$COUNT2\" ]"
+    tasks:
+      write-seed-reference-basic:
+        name: "Write _seed_hom_nodes (>=10 body-system rows, top-down), _seed_source_adapters (>=4 rows: fhir, csv, oura, biomarkers)"
+      write-seed-reference-rest:
+        name: "Write _seed_organizations (>=1), _seed_analyte_conversions, _seed_record_type_schemas, _seed_drug_classes, _seed_loinc_crosswalk (>=5), _seed_policy_rules (>=1)"
+        needs: write-seed-reference-basic
+      write-seed-test-patient:
+        name: "Write _seed_test_patient (one row each in persons + patients + person_identifiers; FK-consistent)"
+        needs: write-seed-reference-rest
+      write-seed-orchestrator:
+        name: "Write seed_all() entrypoint invoking each _seed_* helper; ON CONFLICT DO NOTHING throughout; returns rowcount dict"
+        needs: write-seed-test-patient
+      replace-seed-stub:
+        name: "Replace justfile seed stub with real recipe: uv run python scripts/seed.py; add db-verify recipe"
+        needs: write-seed-orchestrator
+      verify-seed-correctness:
+        name: "Run just seed; assert row counts meet AC-007 minimums; test patient join returns exactly one row (AC-008)"
+        needs:
+          - write-seed-orchestrator
+          - replace-seed-stub
+      verify-audit-bootstrap:
+        name: "Assert audit_changes has rows with batch_id IS NULL after seed (AC-006)"
+        needs: verify-seed-correctness
+      verify-seed-idempotency:
+        name: "Run just seed twice; diff row counts must match; exit 0 both times (AC-009)"
+        needs: verify-seed-correctness
+      test-hitl-transition-log:
+        name: "pytest: insert chart_items row, UPDATE state from suggested to reviewed; assert one new row in chart_state_transitions with correct from/to/timestamp (AC-018)"
+        needs: verify-seed-correctness
+      test-convention-9-gate:
+        name: "pytest: insert 3 chart_items rows in states (reviewed, accepted, suggested); attempt UPDATE to finalized; assert raises; change suggested row to rejected; retry; assert succeeds (AC-019)"
+        needs: test-hitl-transition-log

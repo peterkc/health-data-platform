@@ -1,0 +1,32 @@
+{
+  "type": "retro",
+  "phase_id": "tracer-scaffold",
+  "iterations": [
+    {
+      "skills_used": [
+        "spx-worker",
+        "spx-challenger",
+        "spx-reviewer",
+        "Skill(commit)",
+        "ToolSearch (LSP-deferred but unused)"
+      ],
+      "patterns": [
+        "Worker Execution Notes (vault orphan-branch absolute paths) prevented stranded vault writes",
+        "Two-branch shared_fate contract worked: feature + vault commits land independently but at the same phase boundary",
+        "psql || docker-exec OR-fallback in validation command for host-independent reproducibility",
+        "Challenger surfaced 2 critical contradictions (N=25 vs N=29; main-only validation path) that the worker self-reported as passing \u2014 false-success-confidence pattern caught by external review",
+        "git mv preserves file history across the hh-hitl -> hdp-hitl rename"
+      ],
+      "friction": [
+        "psql not on host; substituted docker exec \u2014 spec validation now wraps in OR-fallback",
+        "Implementer count math drifted (header N=25 vs body N=29; documents table silently dropped) \u2014 sweep discipline post-fix is the lesson",
+        "FR-101 named-target file (platform-malleability.md) had VC framing that survived the strip \u2014 sweep ran on the named files but missed in-file substring patterns"
+      ],
+      "suggestions": [
+        "For Phase 2: extract-operational-tables task should explicitly enumerate the 6 tables that ship and the 3 that defer (per hdp-initial-tables.md), so the worker does not re-derive the deferral",
+        "Consider an spx-validate post-commit hook that re-runs the phase validation chain after `spx close --phase` to catch worktree-vs-main path drift",
+        "When worker reports N changed (e.g., 25 vs 29 vs 30), automatically grep the artifact for the old N values to catch sweep misses before challenger sees them"
+      ]
+    }
+  ]
+}

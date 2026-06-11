@@ -1,0 +1,14 @@
+{
+  "type": "close_meta",
+  "phase_id": "tracer-scaffold",
+  "iterations": [
+    {
+      "metadata": {
+        "closed_at": "2026-04-27T14:25:41.482006+00:00",
+        "phase_id": "tracer-scaffold",
+        "commit": "d3ca63d"
+      },
+      "spec_hash": "8764b2951f1d7e39317926605e65113c3152cc64c44105a05bec8f3fb216be48"
+    }
+  ]
+}

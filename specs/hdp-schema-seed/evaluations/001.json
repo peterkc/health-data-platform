@@ -1,0 +1,145 @@
+{
+  "timestamp": "2026-04-24T15:35:20.910231+00:00",
+  "spec_name": "hdp-schema-seed",
+  "strategy": "dual",
+  "consensus_score": 8.5,
+  "passed": false,
+  "metrics": {
+    "total_time_ms": 103178.9,
+    "spec_tokens": 16835,
+    "score_variance": 0.64,
+    "lowest_dimension": "phase_atomicity"
+  },
+  "models": {
+    "openai": {
+      "model": "openai",
+      "spec_name": "hdp-schema-seed",
+      "dimensions": {
+        "context_completeness": {
+          "score": 8.0,
+          "rationale": "The spec provides strong structural context: new/modified files are enumerated, requirements and acceptance criteria are mapped, and major tables/functions/triggers are named with intended locations. It is not fully complete because several critical implementation details still live outside the artifact itself, especially the extracted canonical DDL in `vault/research/table-designs.md` and the referenced `stubs/*` sketches that are mentioned but not included here.",
+          "suggestions": [
+            "Inline abbreviated signatures or representative snippets for the highest-risk SQL objects instead of relying on external research artifacts.",
+            "Include the essential `env.py`, initial migration, and `seed.py` pseudocode directly in the spec rather than pointing to missing stubs.",
+            "Clarify exact FK targets/schema names for HITL and OASIS tables, especially around `chart_items.visit_id` and `oasis_item_id`."
+          ],
+          "weight": 0.25
+        },
+        "phase_atomicity": {
+          "score": 6.0,
+          "rationale": "The phases are understandable milestones, but they are not consistently atomic. Phase 1 bundles four independent precursor outcomes with a runtime image swap and primitive verification. Phase 2 mixes schema extraction/authoring, Alembic wiring, and application `/health` work. Phase 3 mixes seed implementation and idempotency with HITL behavior tests. In each case there are concrete partial-success states that could be kept independently, so the bundling is broader than a single end-to-end concern.",
+          "suggestions": [
+            "Make the precursor work a true Phase 0 or separate prep phase/spec instead of folding it into Phase 1.",
+            "Split Phase 2 into a schema/Alembic milestone and an app health-probe milestone if those can land independently.",
+            "Split Phase 3 into seed/idempotency and HITL trigger-behavior verification unless they truly share one rollback/shipping boundary."
+          ],
+          "weight": 0.3
+        },
+        "validation_coverage": {
+          "score": 9.0,
+          "rationale": "Validation is one of the strongest areas: each phase has an explicit command, success/acceptance criteria are testable, and many checks are tightly tied to expected outputs. The only reason this is not a 10 is that some phase-level commands do not exercise every major claim in that phase, and a few examples still use placeholders like `psql ...` rather than fully runnable commands.",
+          "suggestions": [
+            "Promote AC-018 and AC-019 into explicit phase-level validation commands, not just task descriptions.",
+            "Replace placeholder commands with complete executable examples throughout the spec.",
+            "Add a direct top-level Phase 2 validation for trigger counts and exact table-count matching against `hdp-initial-tables.md`."
+          ],
+          "weight": 0.15
+        },
+        "risk_identification": {
+          "score": 9.0,
+          "rationale": "The spec has a thorough risk table with concrete likelihood, impact, and mitigation, plus a useful error-handling section. Risks are specific to the implementation choices and not generic boilerplate. Minor deduction only because a couple of internal ambiguities are not explicitly treated as risks, such as the conflicting finalize-gate semantics and assumptions around migration locking behavior.",
+          "suggestions": [
+            "Add an explicit risk/mitigation entry for the finalize-gate semantic mismatch around whether `rejected` rows may be finalized.",
+            "Add a risk for SQL discovery edge cases such as basename collisions or unexpectedly empty glob results across source trees.",
+            "Mark any Alembic locking assumptions as implementation-verified behavior unless the code explicitly enforces them."
+          ],
+          "weight": 0.1
+        },
+        "pattern_clarity": {
+          "score": 7.0,
+          "rationale": "There is solid pattern guidance for file naming, migration discovery, `/health` progressive behavior, audit batching, and trigger placement, and the spec includes a few useful snippets. However, some critical implementation patterns are described rather than shown, and the HITL behavior is internally inconsistent: FR-012 mentions INSERT/UPDATE transition logging while the design says AFTER UPDATE only, and the finalize-gate sketch blocks `rejected` even though AC-019 and the risk section imply `rejected` should pass.",
+          "suggestions": [
+            "Resolve whether transition logging is for INSERT plus UPDATE or UPDATE-only, and show the exact trigger pattern.",
+            "Resolve the finalize-gate rule so all sections agree on whether `rejected` may transition to `finalized`.",
+            "Add short code snippets for seed helper SQL and the audit/transition trigger bodies so implementers can follow a concrete pattern."
+          ],
+          "weight": 0.2
+        }
+      },
+      "average": 7.45,
+      "passed": false,
+      "issues": [
+        "Phase structure is broader than atomic, especially Phase 1 precursor bundling and Phase 3 mixing seed work with HITL test work.",
+        "HITL state-machine behavior is internally inconsistent: transition logging scope and finalize-gate pass/fail states do not fully agree across sections.",
+        "Some critical implementation details are deferred to external artifacts (`table-designs.md`, `stubs/*`) instead of being embedded in the spec."
+      ],
+      "metrics": {
+        "request_time_ms": 96076.1,
+        "input_tokens": 17588,
+        "output_tokens": 6020
+      }
+    },
+    "kimi": {
+      "model": "moonshotai",
+      "spec_name": "hdp-schema-seed",
+      "dimensions": {
+        "phase_atomicity": {
+          "score": 9.0,
+          "rationale": "Three well-defined phases with clear end-to-end concerns: Phase 1 (precursor resolution + infrastructure setup), Phase 2 (schema extraction and DDL application), Phase 3 (data seeding and verification). Each phase exhibits shared-fate characteristics\u2014tasks within a phase share the same input contract, failure outcome, and rollback boundary. No meaningful partial-success states exist; for example, completing only 3 of 4 precursors in Phase 1 or extracting SQL without Alembic setup in Phase 2 would not produce a keepable state. The phases represent distinct workflow milestones (environment ready \u2192 schema applied \u2192 data seeded).",
+          "suggestions": [
+            "Consider renaming Phase 1 validation command to explicitly indicate it validates all four precursors together"
+          ],
+          "weight": 0.3
+        },
+        "context_completeness": {
+          "score": 9.0,
+          "rationale": "Comprehensive file references across all three source trees (packages/hdp-canonical/sql/, packages/hdp-hitl/sql/, verticals/home-health/hh-oasis/sql/) with specific filenames (00-extensions.sql, 50-hitl.sql, etc.). Symbols are well-referenced (touch_updated_at(), enforce_finalize_gate(), uuidv7()). Patterns are shown as code snippets (the finalize-gate trigger SQL in Decision 7, health endpoint JSON structure in FR-003) or clear structural descriptions (Alembic migration discovery logic, seed.py orchestrator). Minor note: references to Phase 0 precursor files (vault/research/table-designs.md) are unverifiable from this spec alone, but internal consistency is maintained.",
+          "suggestions": [
+            "Add explicit file glob patterns for the SQL discovery test to ensure the NN-name.sql convention is machine-verifiable"
+          ],
+          "weight": 0.25
+        },
+        "pattern_clarity": {
+          "score": 8.0,
+          "rationale": "Strong pattern documentation with concrete examples: the Convention-#9 finalize-gate trigger includes complete PL/pgSQL implementation; the /health endpoint progressive-phase logic shows exact JSON fields and error handling (UndefinedTable rollback); seed idempotency pattern clearly specifies ON CONFLICT DO NOTHING; audit batching pattern shows SET LOCAL usage. Some patterns (e.g., Alembic env.py configuration) are described structurally rather than with full code snippets, but sufficient detail is provided for implementation.",
+          "suggestions": [
+            "Include a brief code sketch of the Alembic env.py DATABASE_URL override logic to match the completeness of the trigger SQL"
+          ],
+          "weight": 0.2
+        },
+        "validation_coverage": {
+          "score": 10.0,
+          "rationale": "Excellent validation coverage with specific commands for every phase. Phase 1: complex shell command validating files, docker health, and PostgreSQL primitives (uuidv7, extensions). Phase 2: validates idempotent migration (run twice), NFR-002 compliance (no CREATE TABLE in migrations/), and health endpoint state. Phase 3: validates seed idempotency via row count comparison. Additionally, 19 detailed Acceptance Criteria (AC-001 through AC-019) map to specific verification methods (psql queries, curl commands, pytest).",
+          "suggestions": [
+            "Consider adding a validation for the SQL file naming convention (NN-name.sql) in Phase 2 to catch sort order issues early"
+          ],
+          "weight": 0.15
+        },
+        "risk_identification": {
+          "score": 10.0,
+          "rationale": "Comprehensive risk table with 11 identified risks (R-001 through R-011) covering technical concerns (runtime parsing, PG 18 primitives, extension availability), dependency ordering (FK drift, HOM tree hierarchy), concurrency (Alembic parallel invocations), and operational issues (hardcoded connection strings). Each risk includes likelihood, impact, and concrete mitigation strategies. Notable coverage includes the Convention-#9 gate mis-scoping risk and the autogenerate footgun warning for future SQLAlchemy integration.",
+          "suggestions": [
+            "Add a risk regarding the discoverability of SQL files if package directories are renamed (though partially covered by R-011 and the test_sql_discovery.py mitigation)"
+          ],
+          "weight": 0.1
+        }
+      },
+      "average": 9.05,
+      "passed": true,
+      "issues": [
+        "References to Phase 0 precursor artifacts (vault/research/table-designs.md) are unverifiable from spec content alone, though internally consistent",
+        "Validation commands are complex multi-statement shell pipelines that may require manual debugging if they fail mid-pipeline"
+      ],
+      "metrics": {
+        "request_time_ms": 102793.9,
+        "input_tokens": 17329,
+        "output_tokens": 4581
+      }
+    }
+  },
+  "outliers": {
+    "outliers": [],
+    "high_disagreement": false,
+    "score_range": 1.1
+  }
+}

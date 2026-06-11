@@ -1,0 +1,11 @@
+{
+  "type": "cr",
+  "phase_id": "tracer-scaffold",
+  "iterations": [
+    {
+      "findings": [],
+      "resolved": 0,
+      "summary": "No findings"
+    }
+  ]
+}

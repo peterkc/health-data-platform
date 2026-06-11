@@ -1,0 +1,16 @@
+{
+  "type": "tests",
+  "phase_id": "tracer-scaffold",
+  "iterations": [
+    {
+      "passed": true,
+      "summary": "Validation chain green: 4 file/dir checks + 3 docker services Up/healthy + uuidv7()=t + 4/4 extensions present",
+      "test_count": 8
+    },
+    {
+      "summary": "Validation chain green: 4 file/dir checks + 3 docker services Up/healthy + uuidv7()=t + 4/4 extensions present",
+      "test_count": 8,
+      "pass": true
+    }
+  ]
+}

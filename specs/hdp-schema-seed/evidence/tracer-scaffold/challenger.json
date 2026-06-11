@@ -1,0 +1,34 @@
+{
+  "type": "challenger",
+  "phase_id": "tracer-scaffold",
+  "iterations": [
+    {
+      "pass": false,
+      "blocking": 2,
+      "findings": [
+        "CRITICAL: hdp-initial-tables.md internal N contradiction (header=25, footer=29)",
+        "CRITICAL: tasks.yaml tracer-scaffold.validation tests packages/hdp-hitl on main path which exists only on feature worktree",
+        "WARNING: documents table silently dropped from operational subset",
+        "WARNING: Decision 3 scope conflated (audit-attach vs CREATE TABLE omission)",
+        "WARNING: data-plane.md:332 residual blue.audit_batch_id violates NFR-003",
+        "WARNING: README.md overwrite without spec authorization",
+        "INFO: Matt/investor framing retained in non-target files",
+        "INFO: psql validation shape (host vs docker exec) not normalized"
+      ]
+    },
+    {
+      "pass": true,
+      "blocking": 0,
+      "findings": [
+        "RESOLVED: hdp-initial-tables.md N reconciled to 30 (added documents back to operational set; rewrote rationale section)",
+        "RESOLVED: tasks.yaml validation now uses worktree path .worktrees/hdp-schema-seed/packages/hdp-hitl AND psql/docker-exec fallback for host independence",
+        "RESOLVED: data-plane.md:332 sed-replaced blue.audit_batch_id -> hdp.audit_batch_id (sweep clean across vault)",
+        "ACCEPTED-WITH-NOTE: README.md overwrite is documented in worker report; relative ADR links use ../../../adr/ which resolves vault->repo-root->adr (still valid)",
+        "ACCEPTED-WITH-NOTE: Matt/investor framing in non-target files preserved per FR-101 literal scope; vault visibility tier remains private working context (per .claude/rules/workspace-visibility.md classification)",
+        "ACCEPTED-WITH-NOTE: Decision 3 deferral rationale explicitly distinguishes audit-attachment vs CREATE TABLE omission (rewritten in subset doc)",
+        "INFO: psql/docker-exec validation shape resolved by command-level OR fallback"
+      ],
+      "resolution_summary": "2 critical blocking findings fixed in spec; 6 warnings/info either resolved or documented as accepted-with-note"
+    }
+  ]
+}

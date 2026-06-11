@@ -1,0 +1,35 @@
+# STUB — apply as edits to the repo-root justfile during Phase 2 / 3.
+# Part of vault/specs/hdp-schema-seed/ (see design.md §Component Design).
+#
+# The existing justfile already has `db-migrate` and `seed` stubs that echo TODO.
+# Replace db-migrate with db-ddl below; replace the seed echo with the real call.
+
+# --- Database (replace existing db-migrate + seed stubs) --------------------
+
+# Apply the HDP initial Alembic migration. Idempotent (alembic tracks HEAD).
+db-ddl:
+    DATABASE_URL=postgresql://hdp:hdp@localhost:5437/hdp uv run alembic -c migrations/alembic.ini upgrade head
+
+# Show current alembic revision and history.
+db-migration-status:
+    DATABASE_URL=postgresql://hdp:hdp@localhost:5437/hdp uv run alembic -c migrations/alembic.ini current
+    DATABASE_URL=postgresql://hdp:hdp@localhost:5437/hdp uv run alembic -c migrations/alembic.ini history
+
+# Drop the postgres-data volume and bring the stack back up. Destructive.
+db-reset:
+    just down
+    docker volume rm health-data_postgres-data || true
+    just up
+
+# Seed reference tables + a single test patient. Idempotent.
+seed:
+    DATABASE_URL=postgresql://hdp:hdp@localhost:5437/hdp uv run python scripts/seed.py
+
+# Smoke-verify the DB layer.
+db-verify:
+    @echo "---- /health ----"
+    curl -sf localhost:8000/health | jq .
+    @echo "---- \\dt ----"
+    psql postgresql://hdp:hdp@localhost:5437/hdp -c "\dt"
+    @echo "---- alembic current ----"
+    DATABASE_URL=postgresql://hdp:hdp@localhost:5437/hdp uv run alembic -c migrations/alembic.ini current

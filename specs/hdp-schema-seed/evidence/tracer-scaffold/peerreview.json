@@ -1,0 +1,18 @@
+{
+  "type": "peerreview",
+  "phase_id": "tracer-scaffold",
+  "iterations": [
+    {
+      "pass": true,
+      "consensus": 5.6,
+      "scope": "hdp-initial-tables.md only (configs and renames are mechanical; CR CLI Step 8 covers full diff)",
+      "needs_human_review": true,
+      "models": {
+        "openai": 7.1,
+        "deepseek": 5.4,
+        "gemini": 4.2
+      },
+      "note": "Decision-doc rubric evaluates the file in isolation; alternatives/reversibility/risk dimensions docked because rationale lives in spec design.md and main decision-log, not the file. Advisory only \u2014 does not block phase per protocol Step 14."
+    }
+  ]
+}
