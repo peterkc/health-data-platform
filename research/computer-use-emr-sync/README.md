@@ -45,11 +45,14 @@ fail?
 
 ## Approach
 
-Four sources gathered 2026-06-11 (see `state.yaml` for the plan): prior vault
-context, the OpenEMR public demo page, OpenEMR Docker self-hosting docs, and
-Anthropic's computer-use security/limitations documentation. The failure
-taxonomy below is a seed structure — its rows accrue from tracer-spike runs in
-the driver repository, each observed class feeding retry/idempotency/
+Two gather waves on 2026-06-11 (see `state.yaml` for the plan). Wave one:
+prior vault context, the OpenEMR public demo page, OpenEMR Docker self-hosting
+docs, and Anthropic's computer-use security/limitations documentation. Wave
+two (build-vs-adopt): framework evaluations of the Stagehand Python SDK,
+browser-use, Skyvern, and Playwright, plus cloud deployment options — each
+evaluated against the wave-one decisions rather than in the abstract. The
+failure taxonomy below is a seed structure — its rows accrue from tracer-spike
+runs in the driver repository, each observed class feeding retry/idempotency/
 observability design.
 
 ## Findings
@@ -141,6 +144,59 @@ The infrastructure interest is in this column structure — retries,
 idempotent write-back, checkpointed orchestration, observability — more than
 in any single extraction's accuracy.
 
+### Build-vs-adopt: framework evaluation (decision, proposed)
+
+**Decision: build the driver on Playwright (deterministic loop) + DBOS
+(durable checkpoint/resume); evaluate Stagehand's BYOB pattern for the
+LLM-fallback layer during the spike; borrow browser-use's DOM serialization
+and Skyvern's failure semantics as reference architecture, not dependencies.**
+[ai-found: raw/05, raw/06, raw/07; durable execution raw/08]
+
+The 2026 production consensus independently converged on the hub's wave-one
+control-loop decision: deterministic DOM code primary, LLM engaged only where
+the page is unpredictable. Evaluated against that decision:
+
+| Candidate | License | Verdict | Why |
+| --- | --- | --- | --- |
+| Playwright (Python) | Apache-2.0 | **Adopt** — deterministic engine | Auto-waiting, storage_state login reuse, per-action traces, CDP reconnect (browser survives driver restart); no disqualifiers. Gap list (audit log, re-auth loop, step retry, egress enforcement) is the driver's actual product surface |
+| DBOS Transact | MIT | **Adopt** — checkpoint/resume layer | Embedded Python library, Postgres-backed (matches stack); crash-resume from last completed step; collapses workflow engine + queue + idempotency ledger into one component |
+| Stagehand Python SDK | MIT (SDK + server) | **Evaluate in spike** — fallback layer | BYOB maps exactly onto DOM-first/LLM-fallback (own Playwright page passes into `observe/act/extract`); fully self-hostable via embedded open-source server. Frictions: Node server sidecar, Python SDK lacks act-level caching/self-heal the TS original has |
+| browser-use | MIT (core) | **Reference / possible component** | Indexed-element DOM serializer is the best off-the-shelf page representation for drift recovery and is callable standalone; but pre-1.0 with two foundation swaps in 18 months, and its deterministic-replay sister project (workflow-use) is early-stage and AGPL |
+| Skyvern | AGPL-3.0 | **Reference architecture only** | LLM-per-step control loop inverts the ratified decision; AGPL bars a hard dependency in an MIT driver repo. Worth reading: stable-ID element tree + annotated-screenshot grounding, mutation-observer drift detection, workflow failure semantics (`continue_on_failure`, error-code mapping, human-pause blocks) |
+
+What remains in-house — and is the differentiating surface, not incidental
+glue: versioned selector maps, EMR workflow definitions, read-after-write
+verification, the structured PHI-minimal audit log, failure classification
+(one `TimeoutError` → dead-session vs latency vs drift), and the
+`hh-emr-sync` adapter contract. Notably, no evaluated framework ships durable
+checkpoint/resume for long-running jobs — confirming the seam the wave-one
+contract analysis identified.
+
+### Cloud deployment (decision, proposed)
+
+**Decision: spike runs local/single-VM (synthetic data — anywhere works);
+the production-shaped reference topology is self-hosted workers on a
+BAA-covered cloud, with managed browser infrastructure recorded as a
+credible alternative.** [ai-found: raw/08]
+
+Self-hosted shape: container workers (ECS Fargate-class — no runtime limits,
+~2 GB per browser task) pulling jobs from the Postgres-backed queue;
+checkpoint store and outbox in the same Postgres; secrets manager for EMR
+credentials; VPC egress allowlist enforced at the network layer (the
+wave-one posture's structural control, in cloud terms); LLM-assist calls
+routed through a BAA-covered model platform so even fallback screenshots
+stay inside one compliance boundary. One practical constraint shapes the
+topology: EMR and payer portals frequently allowlist source IPs, so egress
+must present a static IP (NAT/pinned proxy) — native to a VPC, awkward for
+rotating managed fleets.
+
+Managed alternative: Browserbase (the infrastructure behind Stagehand)
+documents SOC 2 Type II, HIPAA BAAs on request, a zero-data-retention mode,
+and per-session dedicated VMs — so the managed path is compliance-viable,
+trading vendor dependency for isolation engineering not built in-house. The
+spike costs nothing to keep portable across both: the driver talks to a CDP
+endpoint either way.
+
 ## Synthesis
 
 A credible browser-level EMR sync transport is **a hardened, audited,
@@ -160,6 +216,13 @@ asynchronous completion — an HTTP adapter satisfies these trivially; an
 automation adapter requires them. If the seam bakes in synchronous
 request/response, the automation transport will not slot in.
 
+The build-vs-adopt pass narrows what the driver repository actually is:
+foundations are adoptable (Playwright for the deterministic loop, DBOS for
+durability), so the repository's own code concentrates on the domain layer —
+selector maps, workflow definitions, audit, failure classification, and the
+adapter contract. That is the right shape for a tracer-bullet project: the
+custom code is exactly the part with research value.
+
 ## Open questions
 
 - Driver repository: name and visibility (pending owner decision); hub links
@@ -169,10 +232,14 @@ request/response, the automation transport will not slot in.
 - Default ports/credentials for the production compose — Docker Hub page.
 - Which OASIS-relevant OpenEMR workflows make the first tracer target (visit
   documentation? assessment forms?).
+- Stagehand Python: does the agent-level cache entry have a server-side
+  replay-submission path, or is replay fully client-built? (raw/05 flags
+  UNVERIFIED) — measure during the spike's fallback evaluation.
 
 ## Next actions
 
-- Create the driver repository; first tracer run against self-hosted OpenEMR.
+- Create the driver repository (Playwright + DBOS scaffold per the
+  build-vs-adopt decision); first tracer run against self-hosted OpenEMR.
 - Begin populating taxonomy rows from observed failures (one hardening
   recommendation per observed class — #18 exit condition).
 - Feed adapter-contract implications into the #11 trim spec's emr-sync seam.
@@ -181,6 +248,7 @@ request/response, the automation transport will not slot in.
 
 - `state.yaml` — structured state for AI re-load
 - `raw/` — per-source captures (01 vault context, 02 demo page, 03 Docker
-  docs, 04 Anthropic security)
+  docs, 04 Anthropic security, 05 Stagehand Python, 06 browser-use + Skyvern,
+  07 Playwright, 08 cloud deployment)
 - GitHub: #18 (this spike), #14 (parent epic), #11 (adapter seam)
 - `../references.md` #9 — OpenEMR as schema reference (distinct role)

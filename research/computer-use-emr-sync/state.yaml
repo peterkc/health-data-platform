@@ -52,6 +52,27 @@ plan:
       query: "Anthropic computer-use docs — security + limitations"
       rationale: "Posture dimension + DOM-vs-vision decision input"
       status: gathered
+    # Wave 2 (2026-06-11, main session) — build-vs-adopt + cloud deployment
+    - id: 5
+      tool: agent fan-out (WebFetch/WebSearch vs official repos + docs)
+      query: "Stagehand Python SDK — architecture, self-host, caching, license"
+      rationale: "Build-vs-adopt dimension — fallback-layer candidate"
+      status: gathered
+    - id: 6
+      tool: agent fan-out (WebFetch/WebSearch vs official repos + docs)
+      query: "browser-use + Skyvern — deterministic APIs, AGPL, reference value"
+      rationale: "Build-vs-adopt dimension — component / reference candidates"
+      status: gathered
+    - id: 7
+      tool: agent fan-out (WebFetch/WebSearch vs official docs)
+      query: "Playwright Python — auth, tracing, network control, long-job ergonomics"
+      rationale: "Build-vs-adopt dimension — deterministic-engine candidate"
+      status: gathered
+    - id: 8
+      tool: WebSearch/WebFetch
+      query: "Browserbase compliance; Fargate browser sizing; DBOS vs Temporal"
+      rationale: "Cloud-deployment dimension — managed vs self-host, BAA boundary"
+      status: gathered
 
 # Phase 3 GATHER — per-source outcomes
 findings:
@@ -71,6 +92,22 @@ findings:
     raw_path: raw/04-anthropic-computer-use-security.md
     outcome: useful
     notes: "Vendor security list maps onto posture; limitation list argues DOM-first"
+  - source_id: 5
+    raw_path: raw/05-stagehand-python.md
+    outcome: useful
+    notes: "Self-hostable (embedded MIT server); BYOB fits DOM-first/fallback; Python lags TS on caching/self-heal"
+  - source_id: 6
+    raw_path: raw/06-browser-use-skyvern.md
+    outcome: useful
+    notes: "browser-use MIT DOM serializer reusable standalone; Skyvern = reference only (LLM-per-step + AGPL)"
+  - source_id: 7
+    raw_path: raw/07-playwright.md
+    outcome: useful
+    notes: "No disqualifiers; gap list = driver's domain layer; egress enforcement belongs at network layer"
+  - source_id: 8
+    raw_path: raw/08-cloud-deployment.md
+    outcome: useful
+    notes: "Browserbase SOC2+BAA+zero-retention = managed path viable; Fargate-class self-host = reference topology; static-IP constraint"
 
 # Phase 4 SYNTHESIZE — decision log
 decisions:
@@ -113,6 +150,40 @@ decisions:
     rejected_alternatives:
       - alternative: "Pre-populate taxonomy from web literature on flaky browser automation"
         reason_rejected: "#18 explicitly wants taxonomy accrued from spike runs; literature rows would be unverified filler"
+  - section: "Build-vs-adopt: framework evaluation"
+    proposed_by: ai
+    revised_by: none   # pending user ratification
+    rationale: >
+      Adopt foundations, own the domain layer: Playwright (Apache-2.0) for the
+      deterministic loop, DBOS (MIT, Postgres-embedded) for checkpoint/resume;
+      evaluate Stagehand BYOB for the LLM-fallback in the spike; browser-use
+      DOM serializer and Skyvern failure semantics as reference architecture.
+      No evaluated framework ships durable checkpoint/resume — the in-house
+      seam is confirmed, and the custom code concentrates on the parts with
+      research value (selector maps, audit, failure classification, adapter
+      contract).
+    rejected_alternatives:
+      - alternative: "browser-use as the driver core"
+        reason_rejected: "Agent-first default inverts DOM-first-primary; pre-1.0 with two foundation swaps in 18 months; its deterministic-replay sister project is early-stage and AGPL"
+      - alternative: "Skyvern as a dependency"
+        reason_rejected: "LLM-per-decision-step inverts the ratified control loop; AGPL bars hard dependency in an MIT driver repo; no deterministic replay"
+      - alternative: "Temporal for durability"
+        reason_rejected: "External cluster to operate; DBOS covers the need embedded in Postgres at this throughput — Temporal is the migrate-to-if-walls-hit path"
+  - section: Cloud deployment
+    proposed_by: ai
+    revised_by: none   # pending user ratification
+    rationale: >
+      Spike runs local/single-VM (synthetic data). Production-shaped reference
+      topology: self-hosted container workers (Fargate-class) + Postgres
+      (queue/checkpoint/outbox) + secrets manager + VPC egress allowlist +
+      BAA-covered LLM platform — one compliance boundary. Managed browser
+      infra (Browserbase: SOC 2 II, HIPAA BAA, zero-retention, per-session
+      VMs) recorded as a viable alternative; portal source-IP allowlisting
+      favors the static-egress VPC shape. Driver stays portable: it talks to
+      a CDP endpoint either way.
+    rejected_alternatives:
+      - alternative: "Serverless functions (Lambda-class) for browser workers"
+        reason_rejected: "15-minute runtime ceilings vs minutes-to-long jobs with checkpoint/resume; browser memory footprint and reconnect topology fit container workers"
 
 # Phase 5 ARTIFACT — open state
 artifact:
@@ -122,8 +193,10 @@ artifact:
     - "Synthetic-patient seeding mechanism (built-in demo data vs Synthea import)"
     - "Production-compose default ports/credentials (Docker Hub page)"
     - "First tracer target workflow (visit documentation vs assessment forms)"
+    - "Stagehand Python agent-cache replay: server-side submission path or client-built? (raw/05 UNVERIFIED; measure in spike)"
   next_actions:
-    - "Create driver repo; first tracer run against self-hosted OpenEMR"
+    - "User ratification of wave-2 decisions (build-vs-adopt, cloud deployment)"
+    - "Create driver repo (Playwright + DBOS scaffold); first tracer run against self-hosted OpenEMR"
     - "Populate taxonomy rows from observed failures (>=1 hardening rec per class)"
     - "Feed idempotency/checkpoint/async contract implications into #11 trim spec"
 
