@@ -2,6 +2,7 @@
 
 MADR format. Numbering by category (expand as decisions accumulate):
 
+- `0xxx` — Foundation (principles, governance)
 - `1xxx` — Technology choices
 - `2xxx` — Architecture
 - `3xxx` — Execution / operational
