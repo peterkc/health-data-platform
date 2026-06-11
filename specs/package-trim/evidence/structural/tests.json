@@ -1,0 +1,10 @@
+{
+  "type": "tests",
+  "phase_id": "structural",
+  "iterations": [
+    {
+      "pass": true,
+      "summary": "Amended validation command green end-to-end: uv sync --all-packages; 12 submodule imports incl. hdp_hitl + hh_emr_sync.transport; transport module httpx-free; pytest -q --co collision-free; member dir count == 8. Orchestrator re-staged worker moves (git add -A; 35 renames detected) and regenerated uv.lock via uv lock (codex sandbox lacked git-index write + network)."
+    }
+  ]
+}

@@ -113,7 +113,12 @@ phases:
         - uv.lock
       skills: []
     validation:
-      command: "uv sync && uv run python -c 'import hdp_core.canonical, hdp_core.audit, hdp_core.identity, hdp_core.consent, hdp_core.provenance, hdp_core.outbox, hdp_api.ingest, hdp_hitl, hh_scribe.oasis, hh_scribe.skills, hh_scribe.mcp, hh_emr_sync.transport' && ! grep -Eq '^[[:space:]]*(import|from)[[:space:]]+httpx' verticals/home-health/hh-emr-sync/src/hh_emr_sync/transport.py && uv run pytest -q --co >/dev/null && test \"$(ls -d packages/*/ verticals/home-health/*/ apps/*/ | wc -l | tr -d ' ')\" = '8'"
+      # Amended at run time (structural phase): plain `uv sync` installs only the
+      # root project (root declares `dependencies = []`), so workspace members are
+      # never importable after it — pre-trim or post-trim. `--all-packages` is the
+      # uv-workspace flag that installs every member. Discriminating test: imports
+      # pass with the flag and zero code changes. Evidence: evidence/structural/debug.json
+      command: "uv sync --all-packages && uv run python -c 'import hdp_core.canonical, hdp_core.audit, hdp_core.identity, hdp_core.consent, hdp_core.provenance, hdp_core.outbox, hdp_api.ingest, hdp_hitl, hh_scribe.oasis, hh_scribe.skills, hh_scribe.mcp, hh_emr_sync.transport' && ! grep -Eq '^[[:space:]]*(import|from)[[:space:]]+httpx' verticals/home-health/hh-emr-sync/src/hh_emr_sync/transport.py && uv run pytest -q --co >/dev/null && test \"$(ls -d packages/*/ verticals/home-health/*/ apps/*/ | wc -l | tr -d ' ')\" = '8'"
   config:
     name: "Phase 2: Config — commitlint scope realignment"
     type: config
@@ -132,7 +137,7 @@ phases:
   docs:
     name: "Phase 3: Docs — architecture text"
     type: docs
-    goal: "README + CLAUDE.md describe the 8-member map; settled positioning language intact; hdp-observability's Depth marker normalized to the canonical form (level stays MIN — format only)."
+    goal: "README + CLAUDE.md describe the 8-member map; settled positioning language intact; hdp-observability's Depth marker normalized to the canonical form (level stays MIN — format only); hh_scribe/skills/__init__.py docstring truth-up ('wrapping hh-mcp' → post-trim reality) — deferred from structural so the move stayed a content-identical R100 rename (NFR-001, structural round-1 review finding)."
     needs:
       - structural
     context:

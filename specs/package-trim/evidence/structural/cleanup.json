@@ -1,0 +1,14 @@
+{
+  "type": "cleanup",
+  "phase_id": "structural",
+  "iterations": [
+    {
+      "skipped": false,
+      "run_id": "package-trim-structural",
+      "files_analyzed": 45,
+      "findings": 0,
+      "applied": 0,
+      "findings_skipped": 0
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "debug",
+  "phase_id": "structural",
+  "iterations": [
+    {
+      "fixed": true,
+      "mechanism": "Validation command, not code: root pyproject declares dependencies = [] and plain `uv sync` installs only the root project \u2014 uv workspace members install only when depended upon or with --all-packages. Members were never importable after plain sync, pre-trim included (latent; smoke tests import nothing, so CI never exposed it). Spec validation command amended in tasks.yaml to `uv sync --all-packages`; worker code untouched.",
+      "discriminating_test": "uv sync --all-packages && python -c \"import hdp_core...\" passes with zero code changes; plain uv sync leaves uv pip list empty of members"
+    }
+  ]
+}

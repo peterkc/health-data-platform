@@ -1,0 +1,13 @@
+{
+  "type": "review-claude",
+  "phase_id": "structural",
+  "iterations": [
+    {
+      "score": 9.7,
+      "min_dim": 9,
+      "verdict": "correct",
+      "summary": "Round 2 cumulative re-review: all round-1 findings resolved or adjudicated sound; dimension scores 10/10/9/10/9; zero findings.",
+      "iterations": 2
+    }
+  ]
+}
