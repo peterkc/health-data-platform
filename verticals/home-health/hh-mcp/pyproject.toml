@@ -4,7 +4,7 @@
     description = "MCP server exposing home-health scribe + HITL + sync as tools."
     readme = "README.md"
     requires-python = ">=3.13"
-    license = { text = "MIT" }
+    license = "MIT"
     authors = [{ name = "Peter K. Chan", email = "peterkc@hey.com" }]
     dependencies = [
         "mcp>=1.2",
