@@ -82,6 +82,10 @@ bd close <id>         # Complete work
   is the ship tracker (PR-closeable work, epics, roadmap); bd is the runtime
   tracker (agent execution state, session-queued work, blockers). TaskCreate
   owns in-session progress; persistent knowledge lives in auto-memory.
+- Visibility: this repo will be public — GH issue content (incl. closed
+  issues) is world-readable and survives history rewrites. Write issue
+  bodies for a public reader; route leak-sensitive execution detail to
+  beads (private Dolt server). An issue must not memorialize what it removes.
 - Run `bd prime` for detailed command reference and session close protocol
 
 ## Session Completion

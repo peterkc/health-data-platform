@@ -46,6 +46,9 @@ vault/
 # Feature worktrees (per .claude/rules edit-routing convention)
 /.worktrees/
 
+# Tooling temp (gh issue body files, etc.)
+.cache/
+
 # Node (commitlint devDependencies)
 node_modules/
 
