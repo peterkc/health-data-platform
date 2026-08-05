@@ -1,0 +1,745 @@
+schema: agx-research/v2
+topic: cms-prior-authorization-strategy
+status: done
+created: 2026-08-05
+updated: 2026-08-05
+
+tracking:
+  bead: hdp-3dh
+
+cursor:
+  phase: artifact
+  active_id: null
+  next_action: null
+
+approvals:
+  scope:
+    status: approved
+    approved_by: peterkc
+    approved_at: 2026-08-05T14:48:42Z
+    amendments:
+      - approved_by: peterkc
+        approved_at: 2026-08-05T14:48:42Z
+        reason: >-
+          Reoriented the outcome toward one deep, independently useful OSS
+          primitive. CV value is implicit, and commercial platform expansion is
+          deferred until implementation depth and external adoption justify it.
+  source_plan:
+    status: approved
+    source_ids: [S-001, S-002, S-003, S-004, S-005, S-006, S-007, S-008, S-009, S-010]
+    approved_by: peterkc
+    approved_at: 2026-08-05T14:48:42Z
+    amendments:
+      - approved_by: peterkc
+        approved_at: 2026-08-05T14:37:12Z
+        reason: >-
+          FederalRegister.gov blocked automated access and three HL7 STU-style
+          paths did not exist. The user approved official GovInfo mirrors and
+          the correct HL7 permanent-version paths without changing evidence
+          goals, authority, or worker tiers.
+      - approved_by: peterkc
+        approved_at: 2026-08-05T14:48:42Z
+        reason: >-
+          Re-approved S-001 through S-010 unchanged under the depth-first OSS
+          scope; the existing sources still cover the revised decision.
+
+scope:
+  problem: >-
+    Decide whether HDP should deepen around one independently useful,
+    provider-side prior-authorization OSS primitive under CMS-0057-F, HTI-4,
+    and CMS-0062-P, rather than attempting a broad platform pivot.
+  audience: >-
+    The HDP owner and prospective OSS users or maintainers evaluating technical
+    depth and practical utility in provider-side prior authorization.
+  boundaries: >-
+    In scope are final versus proposed CMS obligations; EHR and CEHRT integration;
+    Da Vinci CRD, DTR, PAS, and CDex; denial, appeal, billing, and reporting gaps;
+    a change-by-change map of payer duties, provider workflow effects, shared
+    implementation gaps, and HDP support boundaries; HDP primitive reuse;
+    named-tool fit; and defensible provider-side opportunities.
+    Out of scope are legal advice, a full market-size model, implementation work,
+    a complete EHR, clearinghouse, FHIR server, or revenue-cycle platform,
+    unsupported company claims, and broad pharmacy-benefit analysis except where
+    CMS-0062-P changes the opportunity. CV value is an implicit benefit, not the
+    design target.
+  risks: >-
+    Stale or proposed policy may be treated as final; FHIR transport may be
+    confused with workflow and evidence value; standalone software may be assumed
+    to qualify as CEHRT; HDP may be overfit to one company; or non-public user
+    context may leak into the public vault.
+  success: >-
+    Evidence supports one narrow OSS primitive with a production-shaped boundary,
+    exact interoperability role, implementation-depth requirements, deliberate
+    exclusions, a payer/provider impact and opportunity map, prioritized
+    implementation problems, an adopt/reference/reject verdict for every named
+    tool, and explicit unresolved questions.
+
+sources:
+  - id: S-001
+    kind: regulation
+    tools: [Exa]
+    locator: >-
+      https://www.cms.gov/initiatives/burden-reduction/overview/interoperability/policies-regulations/cms-interoperability-prior-authorization-final-rule-cms-0057-f;
+      https://www.cms.gov/initiatives/burden-reduction/overview/interoperability/frequently-asked-questions/prior-authorization-api;
+      https://www.govinfo.gov/content/pkg/FR-2024-02-08/html/2024-00895.htm
+    query: null
+    evidence_goal: >-
+      Establish current CMS-0057-F obligations, scope, exclusions, dates, API
+      behavior, metrics, and FHIR/X12 enforcement discretion.
+    rationale: The final rule is load-bearing for the entire strategy frame.
+    authority: primary
+    covers: [problem, boundaries, risks]
+    worker: research-worker-sol
+    invocation_route: task
+    load_bearing: true
+    motivated_by: null
+    capture: &web_capture
+      date_requirement: 2026-08-05
+      privacy: bounded public non-secret excerpts
+      citation: canonical URL and relevant section or paragraph
+      word_cap: 1200
+      required_fields: &required_fields
+        - worker
+        - invocation_route
+        - revision_or_capture_date
+        - byte_verification
+        - terminal_outcome
+        - observations
+        - interpretation
+        - authority_limits
+        - contradictions
+        - unresolved_gaps
+        - raw_capture_draft
+      non_goals: [Legal advice, Market sizing, Sources outside the approved locators]
+    status: gathered
+    revision: null
+    capture_date: 2026-08-05
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:36:00Z
+      method: Exa reopen of both CMS pages and the approved GovInfo mirror.
+      normalization: none
+      citations:
+        - source_locator: https://www.govinfo.gov/content/pkg/FR-2024-02-08/html/2024-00895.htm
+          source_span: exact text `implement and maintain a Prior Authorization API`
+          capture_span: raw/01-cms-0057-f.md:68
+          source_span_sha256: 72e145dcdf71b8bff8bbc521b64edd18c6d4be6f737f7868b60c61212315c213
+          capture_span_sha256: 72e145dcdf71b8bff8bbc521b64edd18c6d4be6f737f7868b60c61212315c213
+    raw_path: raw/01-cms-0057-f.md
+
+  - id: S-002
+    kind: proposed-regulation
+    tools: [Exa]
+    locator: >-
+      https://www.cms.gov/newsroom/fact-sheets/2026-cms-interoperability-standards-prior-authorization-drugs-proposed-rule;
+      https://www.govinfo.gov/content/pkg/FR-2026-04-14/html/2026-07205.htm
+    query: null
+    evidence_goal: >-
+      Separate CMS-0062-P proposals from final law, including FHIR as a HIPAA
+      transaction standard, drug coverage, clearinghouses, endpoint directories,
+      compliance timing, and RFIs.
+    rationale: The proposal could expand the market and alter the standards boundary.
+    authority: primary
+    covers: [problem, boundaries, risks]
+    worker: research-worker-sol
+    invocation_route: task
+    load_bearing: false
+    motivated_by: null
+    capture: *web_capture
+    status: gathered
+    revision: null
+    capture_date: 2026-08-05
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:36:00Z
+      method: Exa reopen of the CMS fact sheet and approved GovInfo mirror.
+      normalization: none
+      citations:
+        - source_locator: https://www.govinfo.gov/content/pkg/FR-2026-04-14/html/2026-07205.htm
+          source_span: "exact text `ACTION: Proposed rule.`"
+          capture_span: raw/02-cms-0062-p.md:55
+          source_span_sha256: cc6afe4c746397061011e7b7617f0dcde33be1b4d635a5d6440ebb8e4fab77b9
+          capture_span_sha256: cc6afe4c746397061011e7b7617f0dcde33be1b4d635a5d6440ebb8e4fab77b9
+    raw_path: raw/02-cms-0062-p.md
+
+  - id: S-003
+    kind: regulation
+    tools: [Exa]
+    locator: >-
+      https://healthit.gov/resources/hti-4-overview-and-key-dates-for-certification-program/;
+      https://www.govinfo.gov/content/pkg/FR-2025-08-04/html/2025-14681.htm;
+      https://healthit.gov/resources/onc-finalizes-the-adoption-of-certain-health-it-standards-in-the-fy2027-cms-ipps-final-rule/
+    query: null
+    evidence_goal: >-
+      Verify HTI-4 certification criteria, the CEHRT linkage, CDS Hooks and
+      subscriptions, effective dates, and FY2027 implementation-guide versions.
+    rationale: This determines whether HDP can sit beside an EHR or needs a certified partner.
+    authority: primary
+    covers: [problem, boundaries, risks]
+    worker: research-worker-terra
+    invocation_route: task
+    load_bearing: false
+    motivated_by: null
+    capture: *web_capture
+    status: gathered
+    revision: null
+    capture_date: 2026-08-05
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:36:00Z
+      method: Exa reopen of both ASTP pages and the approved GovInfo mirror.
+      normalization: none
+      citations:
+        - source_locator: https://www.govinfo.gov/content/pkg/FR-2025-08-04/html/2025-14681.htm
+          source_span: exact text `voluntary certification of health information technology.`
+          capture_span: raw/03-hti-4-ehr.md:62
+          source_span_sha256: 477b884a063fe8772f0e89817fed484c76abe0d9be198ade625ecfc80186f62b
+          capture_span_sha256: 477b884a063fe8772f0e89817fed484c76abe0d9be198ade625ecfc80186f62b
+    raw_path: raw/03-hti-4-ehr.md
+
+  - id: S-004
+    kind: technical-standard
+    tools: [Exa]
+    locator: >-
+      https://hl7.org/fhir/us/davinci-crd/2.2.1/en/;
+      https://hl7.org/fhir/us/davinci-dtr/2.2.0/en/;
+      https://hl7.org/fhir/us/davinci-pas/2.2.1/en/;
+      https://hl7.org/fhir/us/davinci-cdex/STU2.1/
+    query: null
+    evidence_goal: >-
+      Define the workflow, data, actor, and conformance boundaries of CRD, DTR,
+      PAS, and CDex at the CMS/ONC-adopted versions.
+    rationale: The guides distinguish standards transport from workflow and evidence value.
+    authority: primary
+    covers: [problem, boundaries, success]
+    worker: research-worker-terra
+    invocation_route: task
+    load_bearing: false
+    motivated_by: null
+    capture: *web_capture
+    status: gathered
+    revision: null
+    capture_date: 2026-08-05
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:36:00Z
+      method: Exa reopen of all four approved corrected HL7 version roots.
+      normalization: none
+      citations:
+        - source_locator: https://hl7.org/fhir/us/davinci-cdex/STU2.1/
+          source_span: exact text beginning `This IG provides detailed guidance`
+          capture_span: raw/04-davinci-guides.md:73
+          source_span_sha256: bd3444c61091d477d9c5a9e0b84e1c9f9f51a14f422f6f0f8dd86e2522c0834d
+          capture_span_sha256: bd3444c61091d477d9c5a9e0b84e1c9f9f51a14f422f6f0f8dd86e2522c0834d
+    raw_path: raw/04-davinci-guides.md
+
+  - id: S-005
+    kind: industry-survey
+    tools: [Exa]
+    locator: https://www.wedi.org/2026/03/11/wedi-survey-shows-progress-in-implementing-cms-interoperability-and-prior-authorization-final-rule/
+    query: null
+    evidence_goal: >-
+      Quantify 2026 payer, provider, clearinghouse, and vendor readiness and the
+      reported workflow, expertise, testing, policy-digitization, and integration barriers.
+    rationale: Operational evidence tests whether intended API architecture is deployment reality.
+    authority: secondary-industry
+    covers: [problem, risks, success]
+    worker: research-worker-luna
+    invocation_route: task
+    load_bearing: false
+    motivated_by: null
+    capture: *web_capture
+    status: gathered
+    revision: null
+    capture_date: 2026-08-05
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:42:00Z
+      method: Exa reopen of the exact WEDI article.
+      normalization: none
+      citations:
+        - source_locator: https://www.wedi.org/2026/03/11/wedi-survey-shows-progress-in-implementing-cms-interoperability-and-prior-authorization-final-rule/
+          source_span: exact sentence beginning `A total of 86 responses`
+          capture_span: raw/05-wedi-readiness.md:47
+          source_span_sha256: 49c3bc030d6c8f085406d1995617f86a941653ad64673130a053fb0697787e58
+          capture_span_sha256: 49c3bc030d6c8f085406d1995617f86a941653ad64673130a053fb0697787e58
+    raw_path: raw/05-wedi-readiness.md
+
+  - id: S-006
+    kind: repository
+    tools: [Read, Git]
+    locator: >-
+      health-data main@f7ab653339b4398b3fe6c833833659e3be6ccc41 and
+      vault@e8e9c4ab688cf18d0350151ab2545a4b738ff3c1; bounded files are README.md,
+      package implementations and READMEs, adr/0001-guiding-principles.md,
+      research/fhir-surface.md, research/interoperability-surface.md,
+      research/vertical-billing.md, and research/computer-use-emr-sync/README.md
+    query: null
+    evidence_goal: >-
+      Audit reusable HDP primitives, implementation depth, and conflicting FHIR
+      positioning to identify the smallest coherent strategy change.
+    rationale: Project source is authoritative for what HDP is and can currently support.
+    authority: primary-project
+    covers: [problem, boundaries, risks, success]
+    worker: primary
+    invocation_route: primary
+    load_bearing: false
+    motivated_by: null
+    capture:
+      date_requirement: null
+      privacy: bounded public non-secret excerpts from exact committed revisions
+      citation: repository revision, file path, and line range
+      word_cap: 1600
+      required_fields: *required_fields
+      non_goals: [Dirty worktree evidence, Private tmp notes, Uncommitted payer-portal research]
+    status: gathered
+    revision: main@f7ab653339b4398b3fe6c833833659e3be6ccc41;vault@e8e9c4ab688cf18d0350151ab2545a4b738ff3c1
+    capture_date: null
+    byte_verification:
+      status: verified
+      verified_by: reviewer
+      verified_at: 2026-08-05T15:21:45Z
+      method: Independent reviewer line comparison plus primary Git reads reproducing all three digest pairs.
+      normalization: none
+      citations:
+        - source_locator: main@f7ab653339b4398b3fe6c833833659e3be6ccc41:README.md:18
+          source_span: exact source line
+          capture_span: raw/06-hdp-revisions.md:87
+          source_span_sha256: c63472299ac81103e6dec7475492e818d2cce6530371c24e28eb6deb764ecbc4
+          capture_span_sha256: c63472299ac81103e6dec7475492e818d2cce6530371c24e28eb6deb764ecbc4
+        - source_locator: main@f7ab653339b4398b3fe6c833833659e3be6ccc41:packages/hdp-canonical/README.md:7
+          source_span: exact source line
+          capture_span: raw/06-hdp-revisions.md:91
+          source_span_sha256: 1b11e653a068cb9f202f356e052698621bfaf2c9ca3b654435e981b48f671703
+          capture_span_sha256: 1b11e653a068cb9f202f356e052698621bfaf2c9ca3b654435e981b48f671703
+        - source_locator: vault@e8e9c4ab688cf18d0350151ab2545a4b738ff3c1:research/fhir-surface.md:18
+          source_span: exact source line
+          capture_span: raw/06-hdp-revisions.md:95
+          source_span_sha256: 2d6755a4ff7c4e1ac16339f38698b75e949b99864bd7c626a64a5e4d309b6196
+          capture_span_sha256: 2d6755a4ff7c4e1ac16339f38698b75e949b99864bd7c626a64a5e4d309b6196
+    raw_path: raw/06-hdp-revisions.md
+
+  - id: S-007
+    kind: repository
+    tools: [WebFetch]
+    locator: https://github.com/semantica-agi/semantica/tree/86f115d2003ff1696fae5816ca698576e850b51e
+    query: null
+    evidence_goal: >-
+      Decide whether Semantica is a core runtime component, bounded sidecar,
+      reference design, or reject based on shipped APIs, temporal provenance,
+      maturity, storage, license, and overlap with HDP.
+    rationale: Semantica is the strongest candidate for the evidence and reasoning layer.
+    authority: primary-project
+    covers: [boundaries, risks, success]
+    worker: research-worker-terra
+    invocation_route: task
+    load_bearing: false
+    motivated_by: null
+    capture:
+      date_requirement: null
+      privacy: bounded public non-secret excerpts
+      citation: exact repository revision, file path, and line range
+      word_cap: 1200
+      required_fields: *required_fields
+      non_goals: [Sources outside the approved repository revision, Product strategy verdict]
+    status: gathered
+    revision: 86f115d2003ff1696fae5816ca698576e850b51e
+    capture_date: null
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:43:00Z
+      method: Raw GitHub reopen of bounded files at the approved exact revision.
+      normalization: none
+      citations:
+        - source_locator: https://raw.githubusercontent.com/semantica-agi/semantica/86f115d2003ff1696fae5816ca698576e850b51e/CHANGELOG.md
+          source_span: exact clause ending `has never worked`
+          capture_span: raw/07-semantica.md:48
+          source_span_sha256: 3940babe7352d16d5030f480e1368200d27cf7322667972b4e6cc3bb0d61df0d
+          capture_span_sha256: 3940babe7352d16d5030f480e1368200d27cf7322667972b4e6cc3bb0d61df0d
+    raw_path: raw/07-semantica.md
+
+  - id: S-008
+    kind: repository
+    tools: [WebFetch]
+    locator: https://github.com/TencentCloud/TencentDB-Agent-Memory/tree/3c6fc6425f22d24c4917dc3b7791a175d2d13545
+    query: null
+    evidence_goal: >-
+      Decide whether TencentDB Agent Memory belongs in a PHI workflow runtime or
+      only in agent and developer memory, considering data boundaries, runtime,
+      persistence, ACLs, maturity, and license.
+    rationale: Memory usefulness must not be confused with authoritative health records.
+    authority: primary-project
+    covers: [boundaries, risks, success]
+    worker: research-worker-terra
+    invocation_route: task
+    load_bearing: false
+    motivated_by: null
+    capture:
+      date_requirement: null
+      privacy: bounded public non-secret excerpts
+      citation: exact repository revision, file path, and line range
+      word_cap: 1200
+      required_fields: *required_fields
+      non_goals: [Sources outside the approved repository revision, Product strategy verdict]
+    status: gathered
+    revision: 3c6fc6425f22d24c4917dc3b7791a175d2d13545
+    capture_date: null
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:43:00Z
+      method: Raw GitHub reopen of bounded files at the approved exact revision.
+      normalization: none
+      citations:
+        - source_locator: https://raw.githubusercontent.com/TencentCloud/TencentDB-Agent-Memory/3c6fc6425f22d24c4917dc3b7791a175d2d13545/README.md
+          source_span: exact sentence beginning `Once enabled`
+          capture_span: raw/08-tencentdb-agent-memory.md:49
+          source_span_sha256: da42eece721c8ab6ff1a0b8fd0b3c9f4815d62f9440703a389e1f4ad0e08b582
+          capture_span_sha256: da42eece721c8ab6ff1a0b8fd0b3c9f4815d62f9440703a389e1f4ad0e08b582
+    raw_path: raw/08-tencentdb-agent-memory.md
+
+  - id: S-009
+    kind: technical-documentation
+    tools: [WebFetch, Context7]
+    locator: >-
+      https://github.com/zzet/gortex/tree/8377da58138d01c9dfa24a1aaf648085ccf0315c;
+      Context7 /pulumi/docs;
+      Context7 /pydantic/pydantic-ai/v2.0.0
+    query: >-
+      Classify current Gortex, Pulumi Python and Automation API, and Pydantic AI
+      typed agents, approvals, durable execution, and observability as product
+      runtime, deployment control plane, or development tooling.
+    evidence_goal: >-
+      Establish the correct architectural boundary for the engineering and
+      infrastructure tools named in the source note.
+    rationale: The tools answer one shared core-runtime versus supporting-infrastructure question.
+    authority: primary-project
+    covers: [boundaries, risks, success]
+    worker: research-worker-terra
+    invocation_route: task
+    load_bearing: false
+    motivated_by: null
+    capture:
+      date_requirement: 2026-08-05
+      privacy: bounded public non-secret excerpts
+      citation: exact repository revision or Context7 library ID and relevant section
+      word_cap: 1600
+      required_fields: *required_fields
+      non_goals: [Cloud deployment design, Autonomous production changes, Product strategy verdict]
+    status: gathered
+    revision: gortex@8377da58138d01c9dfa24a1aaf648085ccf0315c;pulumi@current;pydantic-ai@v2.0.0
+    capture_date: 2026-08-05
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:47:00Z
+      method: Raw GitHub reopen for Gortex and repeated exact Context7 queries.
+      normalization: none
+      citations:
+        - source_locator: https://raw.githubusercontent.com/zzet/gortex/8377da58138d01c9dfa24a1aaf648085ccf0315c/README.md
+          source_span: README subtitle beginning `Indexes code into graph`
+          capture_span: raw/09-control-plane-tools.md:72
+          source_span_sha256: 71e3aaf1d120a5851fcb5d79b793d712b97bb6f195af05b9451055e3ef3c46aa
+          capture_span_sha256: 71e3aaf1d120a5851fcb5d79b793d712b97bb6f195af05b9451055e3ef3c46aa
+        - source_locator: Context7 /pulumi/docs `pulumi.automation.Stack`
+          source_span: exact class description beginning `Stack is an isolated`
+          capture_span: raw/09-control-plane-tools.md:76
+          source_span_sha256: 50ba306f118497be0bf2cf34830891fe63db861a3ba2c53dd01b1ece9eb4a198
+          capture_span_sha256: 50ba306f118497be0bf2cf34830891fe63db861a3ba2c53dd01b1ece9eb4a198
+        - source_locator: Context7 /pydantic/pydantic-ai/v2.0.0 AG-UI approval example
+          source_span: exact code line `@agent.tool_plain(requires_approval=True)`
+          capture_span: raw/09-control-plane-tools.md:80
+          source_span_sha256: d77c6b7dc9924a8520ae1418d8aaa55cd86b184e71bd3b13832b095fd367fd89
+          capture_span_sha256: d77c6b7dc9924a8520ae1418d8aaa55cd86b184e71bd3b13832b095fd367fd89
+    raw_path: raw/09-control-plane-tools.md
+
+  - id: S-010
+    kind: company-documentation
+    tools: [Exa]
+    locator: https://www.backbonesystems.ai/;https://www.backbonesystems.ai/contact
+    query: null
+    evidence_goal: >-
+      Ground conversation preparation in Backbone's public product boundary,
+      including pre-service review, payer-policy checks, pre-bill correctness,
+      denial learning, and workflow integration.
+    rationale: Public company claims ground provider-side product analysis in first-party material.
+    authority: primary-company
+    covers: [audience, boundaries, success]
+    worker: research-worker-luna
+    invocation_route: task
+    load_bearing: false
+    motivated_by: null
+    capture: *web_capture
+    status: gathered
+    revision: null
+    capture_date: 2026-08-05
+    byte_verification:
+      status: verified
+      verified_by: openai/gpt-5.6-sol
+      verified_at: 2026-08-05T14:42:00Z
+      method: Exa reopen of both exact company pages.
+      normalization: none
+      citations:
+        - source_locator: https://www.backbonesystems.ai/contact
+          source_span: FAQ `How does Backbone learn over time?`, first sentence
+          capture_span: raw/10-backbone-public.md:46
+          source_span_sha256: 483fb05a467b1941121e8ea8bb11d8fef3eaed66dc1067f318e90156400350fd
+          capture_span_sha256: 483fb05a467b1941121e8ea8bb11d8fef3eaed66dc1067f318e90156400350fd
+    raw_path: raw/10-backbone-public.md
+
+findings:
+  - id: F-001
+    source_ids: [S-001]
+    claim: CMS-0057-F creates 2026 operational duties and primarily 2027 API duties for defined payer classes while excluding drugs and not directly applying to Medicare FFS.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/01-cms-0057-f.md]
+    notes: The market remains mixed across regulated and unregulated payer channels.
+  - id: F-002
+    source_ids: [S-001]
+    claim: The final rule requires specific denial reasons and bounded decision times but does not require real-time adjudication.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/01-cms-0057-f.md]
+    notes: Provider worklists and clinical review remain necessary after API adoption.
+  - id: F-003
+    source_ids: [S-002]
+    claim: CMS-0062-P proposes broader HIPAA FHIR transactions, drug workflows, endpoint publication, and reporting, but none is final law as of the capture date.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/02-cms-0062-p.md]
+    notes: Finalization and dates remain non-blocking unknowns.
+  - id: F-004
+    source_ids: [S-003]
+    claim: HTI-4 creates modular provider prior-authorization certification criteria connected to EHR workflows; certification and provider incentive reporting are distinct obligations.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/03-hti-4-ehr.md]
+    notes: The evidence does not require every third-party component to be certified.
+  - id: F-005
+    source_ids: [S-004]
+    claim: CRD, DTR, PAS, and CDex standardize discovery, documentation capture, submission lifecycle, and supplemental data exchange, not payer policy, evidence sufficiency, local orchestration, or outcome learning.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/04-davinci-guides.md]
+    notes: This defines the open product boundary above and beside FHIR transport.
+  - id: F-006
+    source_ids: [S-005]
+    claim: WEDI respondents report barriers in policy digitization, delegated integration, provider expertise, cross-party testing, workflow redesign, training, and funding.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/05-wedi-readiness.md]
+    notes: The 86-response sample is directional and provider representation is small.
+  - id: F-007
+    source_ids: [S-006]
+    claim: Current HDP authority positions the project as a workflow/governance layer paired with a CDR, but the relevant packages are stubs rather than implemented primitives.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/06-hdp-revisions.md]
+    notes: Strategy must not describe designed packages as production behavior.
+  - id: F-008
+    source_ids: [S-006]
+    claim: Older vault guidance to build and own a FHIR server conflicts with current main guidance to pair with an existing CDR.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/06-hdp-revisions.md]
+    notes: Current main is newer product authority; explicit supersession remains a decision.
+  - id: F-009
+    source_ids: [S-006]
+    claim: HDP's provenance, audit, identity, consent, document, adapter, outbox, and human-review concepts map naturally to authorization and denial workflows, but current reuse estimates are design claims.
+    class: interpreted
+    outcome: accepted
+    raw_paths: [raw/06-hdp-revisions.md]
+    notes: One deep vertical must prove the reuse thesis.
+  - id: F-010
+    source_ids: [S-007]
+    claim: Semantica implements relevant temporal, graph, decision, policy, and provenance concepts but has broad dependencies, volatile defaults, and source-visible maturity contradictions.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/07-semantica.md]
+    notes: Evidence supports reference or optional-sidecar use, not authoritative core adoption.
+  - id: F-011
+    source_ids: [S-008]
+    claim: TencentDB Agent Memory is conversation-oriented, fail-soft agent memory without the verified identity, authorization, retention, and assured-persistence controls needed for authoritative PHI case state.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/08-tencentdb-agent-memory.md]
+    notes: It may support synthetic developer memory only.
+  - id: F-012
+    source_ids: [S-009]
+    claim: Gortex is development tooling, Pulumi is deployment control-plane infrastructure, and Pydantic AI is an optional application agent framework whose host must retain side-effect authority.
+    class: interpreted
+    outcome: accepted
+    raw_paths: [raw/09-control-plane-tools.md]
+    notes: None should define the domain core of the first OSS primitive.
+  - id: F-013
+    source_ids: [S-010]
+    claim: Backbone publicly spans pre-service and pre-bill chart review against payer policy, medical necessity, coding, denial risk, and outcome feedback inside existing operational workflows.
+    class: observed
+    outcome: accepted
+    raw_paths: [raw/10-backbone-public.md]
+    notes: Guarantee and implementation claims remain unverified company assertions.
+  - id: F-014
+    source_ids: [S-001, S-003, S-004, S-005]
+    claim: The durable opportunity is a mixed-channel provider evidence and workflow layer that complements EHR and payer APIs rather than replacing their standards or certification roles.
+    class: interpreted
+    outcome: accepted
+    raw_paths: [raw/01-cms-0057-f.md, raw/03-hti-4-ehr.md, raw/04-davinci-guides.md, raw/05-wedi-readiness.md]
+    notes: This interpretation underpins the proposed OSS boundary.
+
+decisions:
+  - id: D-001
+    question: How should HDP respond to the CMS prior-authorization changes?
+    status: accepted
+    decision: Reposition one HDP vertical around a deep OSS authorization evidence ledger; do not broadly pivot into an EHR, FHIR server, clearinghouse, or full RCM platform.
+    finding_ids: [F-001, F-004, F-005, F-007, F-009, F-014]
+    accepted_by: peterkc
+    accepted_at: 2026-08-05T15:01:05Z
+    rationale: The evidence and provenance layer remains valuable across FHIR and legacy channels and directly exercises HDP's intended primitives.
+    rejected_alternatives:
+      - alternative: Build a complete FHIR prior-authorization server.
+        reason: It duplicates standards infrastructure, conflicts with current HDP authority, and is too broad for depth-first OSS work.
+      - alternative: Keep HDP focused only on the home-health scribe.
+        reason: It would not test the newly important payer/provider evidence workflow identified by the approved scope.
+  - id: D-002
+    question: What should the first OSS primitive own?
+    status: accepted
+    decision: Own append-only authorization case events, content-addressed evidence, bitemporal payer-policy snapshots, requirement-to-evidence links, human attestations, denial/request-more-information lineage, and deterministic packet validation/export.
+    finding_ids: [F-002, F-005, F-006, F-009, F-014]
+    accepted_by: peterkc
+    accepted_at: 2026-08-05T15:01:05Z
+    rationale: These functions remain outside the implementation guides and are useful to providers, vendors, and mixed-channel workflows.
+    rejected_alternatives:
+      - alternative: Start with autonomous medical-necessity adjudication.
+        reason: It is higher risk, harder to validate, and not required to prove the evidence primitive.
+      - alternative: Start with browser automation.
+        reason: Browser transport is channel-specific and already has a separate research lane; the evidence ledger survives the FHIR transition.
+  - id: D-003
+    question: How should HDP integrate with the standards ecosystem?
+    status: accepted
+    decision: Pair with EHR, CEHRT, CDR, FHIR gateway, clearinghouse, and portal adapters through explicit interfaces; import and export CRD/DTR/PAS/CDex artifacts without claiming certification or owning payer adjudication.
+    finding_ids: [F-001, F-003, F-004, F-005, F-008]
+    accepted_by: peterkc
+    accepted_at: 2026-08-05T15:01:05Z
+    rationale: This preserves standards conformance and makes the primitive useful in both API and legacy workflows.
+    rejected_alternatives:
+      - alternative: Make FHIR the internal storage model.
+        reason: Current HDP authority treats FHIR as an edge projection and the evidence ledger needs cross-channel events not defined as one FHIR resource.
+  - id: D-004
+    question: Which named tools belong in the first implementation?
+    status: accepted
+    decision: Keep Semantica as a reference or later optional sidecar, reject TencentDB Agent Memory from PHI runtime, use Gortex only for development, defer Pulumi until deployment, and keep Pydantic AI optional until deterministic behavior and human gates are complete.
+    finding_ids: [F-010, F-011, F-012]
+    accepted_by: peterkc
+    accepted_at: 2026-08-05T15:01:05Z
+    rationale: The first OSS contribution should expose HDP's own domain depth rather than hide it behind immature or non-domain infrastructure.
+    rejected_alternatives:
+      - alternative: Adopt all named tools as core components.
+        reason: They serve different layers and several lack the authority or assurance needed for case state.
+
+questions:
+  - id: Q-001
+    status: open
+    blocking: false
+    question: What exact CEHRT configuration will satisfy the 2027 Electronic Prior Authorization measure in a deployment using an external OSS evidence component?
+    unlocks: Eligibility claims and certified-partner integration guidance.
+  - id: Q-002
+    status: open
+    blocking: false
+    question: Which CMS-0062-P provisions and dates will survive into a final rule?
+    unlocks: Drug, clearinghouse, endpoint-directory, and universal-HIPAA roadmap commitments.
+  - id: Q-003
+    status: open
+    blocking: false
+    question: Which provider, payer, clearinghouse, or vendor design partner will validate the first evidence-ledger workflow and synthetic fixtures?
+    unlocks: Product validation and a justified second adapter.
+  - id: Q-004
+    status: open
+    blocking: false
+    question: Which permissively licensed synthetic payer policies and authorization examples can support a public conformance corpus?
+    unlocks: A richer OSS fixture set without copying proprietary payer criteria.
+
+exclusions:
+  - id: X-001
+    exclusion: Legal or regulatory compliance advice
+    rationale: The artifact is product and architecture research, not counsel.
+  - id: X-002
+    exclusion: Non-public user context in the public hub
+    rationale: The hub admits public evidence only.
+  - id: X-003
+    exclusion: Uncommitted payer-portal research as evidence
+    rationale: Dirty bytes cannot support accepted findings under the research contract.
+
+sufficiency:
+  status: sufficient
+  rationale: All approved sources have terminal gathered outcomes and support a bounded OSS strategy, impact map, tool verdicts, and explicit non-blocking unknowns.
+  blocking_questions: []
+
+review:
+  required: true
+  status: accepted
+  reviewer: reviewer
+  verdict: >-
+    Accepted after focused confirmation that all eight review findings were
+    resolved and S-006 records independent byte verification.
+  findings:
+    - id: R-001
+      severity: high
+      finding: Citation hashes were placeholders while sufficiency was declared.
+    - id: R-002
+      severity: high
+      finding: README artifact acceptance conflicted with in-progress workflow state.
+    - id: R-003
+      severity: medium
+      finding: The impact map combined an endpoint proposal with an oversight RFI and omitted HTI dates.
+    - id: R-004
+      severity: medium
+      finding: Ledger content and external authority boundaries were ambiguous.
+    - id: R-005
+      severity: medium
+      finding: An interpreted bitemporal model was phrased as a universal need.
+    - id: R-006
+      severity: medium
+      finding: Public metadata disclosed non-public outreach context.
+    - id: R-007
+      severity: medium
+      finding: Review status was accepted while the recorded verdict still said changes-required.
+    - id: R-008
+      severity: low
+      finding: README called D-001 through D-004 proposed after recording them as accepted.
+  dispositions:
+    - review_finding_id: R-001
+      status: resolved
+      action: Added and command-verified source/capture SHA-256 pairs for every source.
+    - review_finding_id: R-002
+      status: resolved
+      action: Restored README lifecycle status to proposed until final artifact acceptance.
+    - review_finding_id: R-003
+      status: resolved
+      action: Added October 2025/2026 dates and split the endpoint proposal from the oversight RFI.
+    - review_finding_id: R-004
+      status: resolved
+      action: Defined derived case state, external EHR/payer authority, evidence references, synthetic-only scope, and deferred PHI controls.
+    - review_finding_id: R-005
+      status: resolved
+      action: Relabeled the cross-party bitemporal model as an implementation hypothesis requiring design-partner validation.
+    - review_finding_id: R-006
+      status: resolved
+      action: Removed non-public outreach purpose and generalized the privacy exclusion.
+    - review_finding_id: R-007
+      status: resolved
+      action: Restored changes-required, then advanced to accepted only after focused reviewer confirmation.
+    - review_finding_id: R-008
+      status: resolved
+      action: Changed the README cross-reference to accepted decisions.
+
+artifact:
+  readme: README.md
+  status: accepted
+  next_actions: []
